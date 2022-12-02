@@ -1,7 +1,7 @@
 import json
 import requests
 import re
-
+from decrypt_key import key_decryption
 
 def jprint(obj):
 
@@ -10,7 +10,7 @@ def jprint(obj):
 
 
 def get_activities_parks():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get(
             "https://developer.nps.gov/api/v1/activities/parks?" + api_key)
@@ -32,7 +32,7 @@ def get_activities_parks():
 
 
 def get_amenities_parks():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
 
     try:
         response = requests.get("https://developer.nps.gov/api/v1/amenities/parksplaces?" + api_key)
@@ -55,7 +55,7 @@ def get_amenities_parks():
 
 
 def get_amenities_visitor_center():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
 
     try:
         response = requests.get("https://developer.nps.gov/api/v1/amenities/parksvisitorcenters?" + api_key)
@@ -79,7 +79,7 @@ def get_amenities_visitor_center():
 
 
 def get_campgrounds():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get("https://developer.nps.gov/api/v1/campgrounds?" + api_key)
     except ConnectionError:
@@ -148,7 +148,7 @@ def get_campgrounds():
 
 
 def get_parkinglots():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get("https://developer.nps.gov/api/v1/parkinglots?" + api_key)
     except ConnectionError:
@@ -180,7 +180,7 @@ def get_parkinglots():
 
 
 def get_places():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get("https://developer.nps.gov/api/v1/places?" + api_key)
     except ConnectionError:
@@ -206,7 +206,7 @@ def get_places():
 
 
 def get_thingstodo():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get("https://developer.nps.gov/api/v1/thingstodo?" + api_key)
     except ConnectionError:
@@ -245,7 +245,7 @@ def get_thingstodo():
 
 
 def get_topics_parks():
-    api_key = "&api_key=WD2UnLZgaszW2QbHPYcs9LS5IFbv1YXZL8xTkcwC"
+    api_key = key_decryption()
     try:
         response = requests.get("https://developer.nps.gov/api/v1/topics/parks?" + api_key)
     except ConnectionError:
