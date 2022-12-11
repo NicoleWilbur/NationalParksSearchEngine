@@ -7,21 +7,12 @@ from results_object import ParkResults
 # Add connection
 class MySQLConnector:
 
-    def __init__(self, user_host, user_name, user_password, user_database_name):
+    def __init__(self, user_host, user_name, user_password):
         try:
-            if user_database_name is None:
-                self.__conn = mysql.connector.connect(
-                    host=user_host,
-                    user=user_name,
-                    password=user_password,
-                )
-            elif user_database_name is not None:
-                self.__conn = mysql.connector.connect(
-                    host=user_host,
-                    user=user_name,
-                    password=user_password,
-                    database=user_database_name,
-                )
+            self.__conn = mysql.connector.connect(
+                host=user_host,
+                user=user_name,
+                password=user_password)
             print("Connected to server.")
         except ConnectionRefusedError:
             print("Connection refused; please check connection settings and try again.")
