@@ -191,4 +191,17 @@ class APIPandas:
 
         # print(list)
         things_to_do_df = pd.DataFrame(data=data, columns=cols)
-        print(things_to_do_df.to_string())
+        #print(things_to_do_df.to_string())
+
+        def fetch_dropdown_list_data(self):
+            distinct_activities_parks = []
+            distinct_amenity = []
+            distinct_park = []
+            distinct_state = []
+            #return distinct_activities_parks, distinct_amenity, distinct_park, distinct_state
+            pass
+
+        def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
+            park_list = []
+            where_logic = ""
+            pass
