@@ -1,4 +1,6 @@
 import json
+
+import numpy as np
 import requests
 import pandas as pd
 import flat_table
@@ -17,6 +19,14 @@ class APIPandas:
                               "https://developer.nps.gov/api/v1/parkinglots?limit=99000",
                               "https://developer.nps.gov/api/v1/places?limit=99000",
                               "https://developer.nps.gov/api/v1/thingstodo?limit=99000"]
+        self.activities_df = []
+        self.amenities_parks_df = []
+        self.amenities_vc_df = []
+        self.campgrounds_df = []
+        self.parking_lot_df = []
+        self.places_df = []
+        self.things_to_do_df = []
+
         # results = response.json()['data']
 
     @staticmethod
@@ -47,7 +57,7 @@ class APIPandas:
                        self.dc(item['name'])]
                 data.append(lst)
         # print(data)
-        activities_df = pd.DataFrame(data=data, columns=cols)
+        self.activities_df = pd.DataFrame(data=data, columns=cols)
         # print(activities_df.to_string())
 
         ##amenities_parks
@@ -62,7 +72,7 @@ class APIPandas:
                 for place in park["places"]:
                     lst = [self.dc(park["parkCode"]), self.dc(item[0]["name"]), self.dc(place["url"])]
                     data.append(lst)
-        amenities_parks_df = pd.DataFrame(data=data, columns=cols)
+        self.amenities_parks_df = pd.DataFrame(data=data, columns=cols)
         #print(amenities_parks_df.to_string())
 
         ##amenities_visitor_centers
@@ -77,7 +87,7 @@ class APIPandas:
                 for visitor_center in park['visitorcenters']:
                     lst = [park["parkCode"], item[0]["name"], visitor_center['name'], visitor_center['url']]
                     data.append(lst)
-        amenities_vc_df = pd.DataFrame(data=data, columns=cols)
+        self.amenities_vc_df = pd.DataFrame(data=data, columns=cols)
         # print(amenities_vc_df.to_string())
 
         ##campgrounds
@@ -115,7 +125,7 @@ class APIPandas:
             data.append(lst)
 
         #print(data)
-        campgrounds_df = pd.DataFrame(data=data, columns=cols)
+        self.campgrounds_df = pd.DataFrame(data=data, columns=cols)
         #print(campgrounds_df.to_string())
 
         ##parking_lots
@@ -139,7 +149,7 @@ class APIPandas:
                 lst.append(self.dc(park['parkCode']))
                 data.append(lst)
         #print(data)
-        parking_lot_df = pd.DataFrame(data=data, columns=cols)
+        self.parking_lot_df = pd.DataFrame(data=data, columns=cols)
         # print(parking_lot_df.to_string())
 
         ##places
@@ -160,7 +170,7 @@ class APIPandas:
             data.append(lst)
 
         #print(data)
-        places_df = pd.DataFrame(data=data, columns=cols)
+        self.places_df = pd.DataFrame(data=data, columns=cols)
         # print(places_df.to_string())
 
         ##things to do
@@ -190,18 +200,30 @@ class APIPandas:
             data.append(lst)
 
         # print(list)
-        things_to_do_df = pd.DataFrame(data=data, columns=cols)
+        self.things_to_do_df = pd.DataFrame(data=data, columns=cols)
         #print(things_to_do_df.to_string())
 
-        def fetch_dropdown_list_data(self):
-            distinct_activities_parks = []
-            distinct_amenity = []
-            distinct_park = []
-            distinct_state = []
-            #return distinct_activities_parks, distinct_amenity, distinct_park, distinct_state
-            pass
+    def fetch_dropdown_list_data(self):
+        distinct_activities_parks = []
+        distinct_amenities = []
+        distinct_parks = []
+        distinct_states = []
+        try:
+            distinct_activities_parks = self.activities_df["activity_name"].unique()
+            distinct_amenities = self.amenities_parks_df["amenity_name"].unique()
+            distinct_parks = self.activities_df["park_name"].unique()
+            states_list = self.activities_df["park_states"].unique()
+            for state in states_list:
+                if len(state) == 2:
+                    distinct_states.append(state)
 
-        def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
-            park_list = []
-            where_logic = ""
-            pass
+
+        except ConnectionError:
+            print("4: An error occurred; please try again.")
+
+        return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
+
+    def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
+        park_list = []
+        where_logic = ""
+        pass

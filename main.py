@@ -30,10 +30,12 @@ def main():
     # GUIInterface(distinct_activities, distinct_amenities, distinct_parks, distinct_states, my_init_cnxn)
 
     api_key = key_decryption()
-    print(api_key)
-    api_connection = APIPandas(api_key)
+    data_handler = APIPandas(api_key)
+    data_handler.get_data()
+    distinct_activities, distinct_amenities, distinct_parks, distinct_states = data_handler.fetch_dropdown_list_data()
 
-    api_connection.get_data()
+    for x in distinct_states:
+        print(x)
 
 if __name__ == '__main__':
     main()
