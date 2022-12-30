@@ -208,15 +208,16 @@ class APIPandas:
         distinct_amenities = []
         distinct_parks = []
         distinct_states = []
+        length_to_find = 2
         try:
             distinct_activities_parks = self.activities_df["activity_name"].unique()
             distinct_amenities = self.amenities_parks_df["amenity_name"].unique()
             distinct_parks = self.activities_df["park_name"].unique()
-            states_list = self.activities_df["park_states"].unique()
-            for state in states_list:
-                if len(state) == 2:
-                    distinct_states.append(state)
-
+            distinct_states = self.activities_df.loc[self.activities_df["park_states"].str.len() == length_to_find,"park_states"].unique()
+            # states_list = self.activities_df["park_states"].unique()
+            # for state in states_list:
+            #     if len(state) == 2:
+            #         distinct_states.append(state)
 
         except ConnectionError:
             print("4: An error occurred; please try again.")
