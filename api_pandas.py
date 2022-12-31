@@ -226,20 +226,35 @@ class APIPandas:
 
     def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
         park_list = []
+        pandas_where = ""
         #self.results_df = pd.DataFrame(data=data, columns=cols)
 
         try:
             undup_activities = self.activities_df.drop_duplicates(subset=['park_name', 'activity_name'])
-            pandas_select = pd.merge(undup_activities, self.amenities_parks_df, on='park_code', how='left')
-            #print(pandas_select.to_string())
+            join_amenities = pd.merge(undup_activities, self.amenities_parks_df, on='park_code', how='left')
+            #print(join_amenities.to_string())
 
-            if activities_selection and amenities_selection and parks_selection and states_selection:
-                boo = pandas_select[pandas_select["activity_name"].isin(activities_selection)] & \
-                pandas_select[pandas_select["amenity_name"].isin(amenities_selection)] & \
-                pandas_select[pandas_select["park_states"].isin(activities_selection)] & \
-                pandas_select[pandas_select["park_name"].isin(activities_selection)]
-            print(boo.to_string())
+            if activities_selection:
+                pandas_where += 'join_amenities[join_amenities["activity_name"].isin(activities_selection)]'
+                if amenities_selection or states_selection or parks_selection:
+                    pandas_where += " & "
 
+            if activities_selection:
+                pandas_where += 'join_amenities[join_amenities["amenity_name"].isin(amenities_selection)]'
+                if states_selection or parks_selection:
+                    pandas_where += " & "
+
+            if states_selection:
+                pandas_where += 'join_amenities[join_amenities["park_states"].isin(activities_selection)]'
+                if parks_selection:
+                    pandas_where += " & "
+
+            if parks_selection:
+                pandas_where += 'join_amenities[join_amenities["park_name"].isin(activities_selection)]'
+
+            pandas_select_df = pd.DataFrame()
+            ##fix below
+            print(exec(pandas_where))
 
         #
         #     if activities_selection:
