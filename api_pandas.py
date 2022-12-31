@@ -226,5 +226,81 @@ class APIPandas:
 
     def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
         park_list = []
-        where_logic = ""
-        pass
+        #self.results_df = pd.DataFrame(data=data, columns=cols)
+
+        try:
+            undup_activities = self.activities_df.drop_duplicates(subset=['park_name', 'activity_name'])
+            pandas_select = pd.merge(undup_activities, self.amenities_parks_df, on='park_code', how='left')
+            #print(pandas_select.to_string())
+
+            if activities_selection and amenities_selection and parks_selection and states_selection:
+                boo = pandas_select[pandas_select["activity_name"].isin(activities_selection)] & \
+                pandas_select[pandas_select["amenity_name"].isin(amenities_selection)] & \
+                pandas_select[pandas_select["park_states"].isin(activities_selection)] & \
+                pandas_select[pandas_select["park_name"].isin(activities_selection)]
+            print(boo.to_string())
+
+
+        #
+        #     if activities_selection:
+        #         where_logic = " activity_name IN ("                                      # df[df['col_1'].isin([1,2,3])]
+        #         if len(activities_selection) > 1:                         df[(df['col_1'] == 11) & (df['col_2'] > 5)]
+        #             for activity in activities_selection[:-1]:
+        #                 where_logic += "'" + activity + "'" + ','
+        #         where_logic += "'" + activities_selection[-1] + "') "
+        #
+        #         if amenities_selection or states_selection or parks_selection:
+        #             where_logic += "and"
+        #
+        #     if amenities_selection:
+        #         where_logic += " amenity in ("
+        #         if len(amenities_selection) > 1:
+        #             for amenity in amenities_selection[:-1]:
+        #                 where_logic += "'" + amenity + "'" + ','
+        #         where_logic += "'" + amenities_selection[-1] + "') "
+        #         print(where_logic)
+        #
+        #         if states_selection or parks_selection:
+        #             where_logic += "and"
+        #             print(where_logic)
+        #
+        #     if states_selection:
+        #         where_logic += " park_states in ("
+        #         if len(states_selection) > 1:
+        #             for state in states_selection[:-1]:
+        #                 where_logic += "'" + state + "'" + ','
+        #         where_logic += "'" + states_selection[-1] + "') "
+        #
+        #         if parks_selection:
+        #             where_logic += "and"
+        #
+        #     if parks_selection:
+        #         where_logic += " park_name in ("
+        #         if len(parks_selection) > 1:
+        #             for park in parks_selection[:-1]:
+        #                 where_logic += "'" + park + "'" + ','
+        #         where_logic += "'" + parks_selection[-1] + "') "
+        #
+        #     select_statement += where_logic + "ORDER BY park_name"
+        #     print(select_statement)
+        #     __cursor.execute(select_statement)
+        #
+        #     for park_name in list(__cursor):
+        #         # park_list += park_name
+        #         park_state = "foo"
+        #         park_information = "boo"
+        #         park_list.append(ParkResults(park_name[0], park_state, park_information))
+        #     print("A")
+        #
+        #     # for park in park_list:
+        #     #     print('Name: {},   State: {},   Information: {}'.format(park.park_name, park.park_state, park.park_information))
+        #
+        #     # ParkResults.display_park(park_list)
+        #     # ParkResults.save_to_file(park_list)
+        except ConnectionError:
+            print("4: Connection interrupted; please try again.")
+        # finally:
+        #     __cursor.close()
+        #
+        # return park_list
+        #

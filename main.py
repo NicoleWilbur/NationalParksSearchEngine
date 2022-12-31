@@ -33,9 +33,7 @@ def main():
     data_handler = APIPandas(api_key)
     data_handler.get_data()
     distinct_activities, distinct_amenities, distinct_parks, distinct_states = data_handler.fetch_dropdown_list_data()
-
-    for x in distinct_states:
-        print(x)
+    data_handler.fetch_results(['camping', 'caving'], ['Restroom'], ['Acad'], ['ME'])
 
 if __name__ == '__main__':
     main()

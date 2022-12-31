@@ -159,7 +159,7 @@ class MySQLConnector:
                       "LEFT JOIN NPS_API_DATA.amenities_parks b ON a.park_code = b.park_code WHERE"
 
             if activities_selection:
-                where_logic = " activity_name IN ("
+                where_logic = " activity_name IN ("     #df[df['col_1'].isin([1,2,3])]
                 if len(activities_selection) > 1:
                     for activity in activities_selection[:-1]:
                         where_logic += "'" + activity + "'" + ','
