@@ -21,7 +21,6 @@ class APIPandas:
                               "https://developer.nps.gov/api/v1/thingstodo?limit=99000"]
         self.activities_df = []
         self.amenities_parks_df = []
-        self.amenities_vc_df = []
         self.campgrounds_df = []
         self.parking_lot_df = []
         self.places_df = []
@@ -56,12 +55,10 @@ class APIPandas:
                 lst = [self.dc(park['parkCode']), self.dc(park['fullName']), self.dc(park['states']),
                        self.dc(item['name'])]
                 data.append(lst)
-        # print(data)
         self.activities_df = pd.DataFrame(data=data, columns=cols)
-        # print(activities_df.to_string())
 
         ##amenities_parks
-        cols = ["park_code", "amenity_name", "url"]
+        cols = ["park_code", "amenity_name", "amenity_url"]
         data = []
 
         response = requests.get(self.api_addresses[1] + self.api_key)
@@ -73,30 +70,17 @@ class APIPandas:
                     lst = [self.dc(park["parkCode"]), self.dc(item[0]["name"]), self.dc(place["url"])]
                     data.append(lst)
         self.amenities_parks_df = pd.DataFrame(data=data, columns=cols)
-        #print(amenities_parks_df.to_string())
-
-        ##amenities_visitor_centers
-        cols = ["park_code", "amenity_name", "visitor_center_name", "visitor_center_url"]
-        data = []
-
-        response = requests.get(self.api_addresses[2] + self.api_key)
-        results = response.json()["data"]
-
-        for item in results:
-            for park in item[0]["parks"]:
-                for visitor_center in park['visitorcenters']:
-                    lst = [park["parkCode"], item[0]["name"], visitor_center['name'], visitor_center['url']]
-                    data.append(lst)
-        self.amenities_vc_df = pd.DataFrame(data=data, columns=cols)
-        # print(amenities_vc_df.to_string())
 
         ##campgrounds
-        cols = ["id", "campground_name", "url", "road", "classification", "park_code", "general_ADA",
-                "wheelchair_access_campground", "rv_allowed", "rv_info", "rv_max_length", "trailers_allowed",
-                "trailer_max_length", "description", "cell_reception", "camp_store", "dump_station", "internet",
-                "potable_water", "showers", "toilets", "campsites_electric", "campsites_group", "campsites_horse",
-                "campsites_other", "campsites_rv_only", "campsites_tent_only", "campsites_boat_ramp", "total_sites",
-                "staff_volunteer"]
+        cols = ["park_code", "campground_id", "campground_name", "campground_url", "campground_road",
+                "campground_classification", "campground_general_ADA", "campground_wheelchair_access",
+                "campground_rv_allowed", "campground_rv_info", "campground_rv_max_length", "campground_trailers_allowed",
+                "campground_trailer_max_length", "campground_description", "campground_cell_reception",
+                "campground_camp_store", "campground_dump_station", "campground_internet", "campground_potable_water",
+                "campground_showers", "campground_toilets", "campground_campsites_electric", "campground_campsites_group",
+                "campground_campsites_horse", "campground_campsites_other", "campground_campsites_rv_only",
+                "campground_campsites_tent_only", "campground_campsites_boat_ramp", "campground_total_sites",
+                "campground_staff_volunteer"]
         data = []
 
         response = requests.get(self.api_addresses[3] + self.api_key)
@@ -104,12 +88,12 @@ class APIPandas:
         #jprint(results)
 
         for item in results:
-            lst = [self.dc(item['id']), self.dc(item['name']), self.dc(item['url'])]
+            lst = [item['parkCode'], self.dc(item['id']), self.dc(item['name']), self.dc(item['url'])]
             for road in item['accessibility']['accessRoads']:
                 lst.append(self.dc(road))
             for classification in item['accessibility']['classifications']:
                 lst.append(self.dc(classification))
-            lst += [item['parkCode'], self.dc(item['accessibility']['adaInfo']), self.dc(item['accessibility']['wheelchairAccess']),
+            lst += [self.dc(item['accessibility']['adaInfo']), self.dc(item['accessibility']['wheelchairAccess']),
                     self.dc(item['accessibility']['rvAllowed']), self.dc(item['accessibility']['rvInfo']),
                     self.dc(item['accessibility']['rvMaxLength']), self.dc(item['accessibility']['trailerAllowed']),
                     self.dc(item['accessibility']['trailerMaxLength']), self.dc(item['description']),
@@ -129,8 +113,9 @@ class APIPandas:
         #print(campgrounds_df.to_string())
 
         ##parking_lots
-        cols = ["id", "name", "ADA_facility_description", "is_lot_accessible", "number_oversized_spaces", "number_ADA_spaces",
-                "number_ADA_Step_Free_Spaces", "number_ADA_van_spaces", "description", "parkCode"]
+        cols = ["parking_lots_id", "parking_lots_name", "parking_lots_ADA_facility_description",
+                "parking_lots_is_lot_accessible", "parking_lots_number_oversized_spaces", "parking_lots_number_ADA_spaces",
+                "parking_lots_number_ADA_Step_Free_Spaces", "parking_lots_number_ADA_van_spaces", "parking_lots_description", "park_code"]
         data = []
 
         response = requests.get(self.api_addresses[4] + self.api_key)
@@ -150,10 +135,11 @@ class APIPandas:
                 data.append(lst)
         #print(data)
         self.parking_lot_df = pd.DataFrame(data=data, columns=cols)
+        #self.parking_lot_df = self.parking_lot_df[-1:] + self.parking_lot_df[:-1]
         # print(parking_lot_df.to_string())
 
         ##places
-        cols = ["id", "title", "url", "park_code"]
+        cols = ["places_id", "places_title", "places_url", "park_code"]
         data = []
 
         response = requests.get(self.api_addresses[5] + self.api_key)
@@ -174,7 +160,8 @@ class APIPandas:
         # print(places_df.to_string())
 
         ##things to do
-        cols = ["id", "activity_name", "accessibility_information", "location", "title", "url", "park_code", "topic_name"]
+        cols = ["things to do_id", "things to do_activity_name", "things to do_accessibility_information",
+                "things to do_location", "things to do_title", "things to do_url", "park_code", "things to do_topic_name"]
         data = []
 
         response = requests.get(self.api_addresses[6] + self.api_key)
@@ -227,34 +214,52 @@ class APIPandas:
     def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
         park_list = []
         pandas_where = ""
+        pandas_select_df = pd.DataFrame()
         #self.results_df = pd.DataFrame(data=data, columns=cols)
 
         try:
-            undup_activities = self.activities_df.drop_duplicates(subset=['park_name', 'activity_name'])
-            join_amenities = pd.merge(undup_activities, self.amenities_parks_df, on='park_code', how='left')
-            #print(join_amenities.to_string())
+            #undup_activities = self.activities_df.drop_duplicates(subset=['park_name', 'activity_name'])
+            # print(undup_activities.to_string())
+            #undup_amenities = self.amenities_parks_df.drop_duplicates(subset=['amenity_name'])
+            # print(undup_amenities.to_string())
+            pandas_select_df = pd.merge(self.activities_df, self.amenities_parks_df, on='park_code', how='left')
+            pandas_select_df = pd.merge(pandas_select_df, self.campgrounds_df, on='park_code', how='left')
+            pandas_select_df = pd.merge(pandas_select_df, self.parking_lot_df, on='park_code', how='left')
 
-            if activities_selection:
-                pandas_where += 'join_amenities[join_amenities["activity_name"].isin(activities_selection)]'
-                if amenities_selection or states_selection or parks_selection:
-                    pandas_where += " & "
+            print(self.things_to_do_df.to_string(max_rows=100))
+            print(self.places_df.to_string(max_rows=100))
+            pandas_select_df = pd.merge(pandas_select_df, self.places_df, on='park_code', how='outer')
+            pandas_select_df = pd.merge(pandas_select_df, self.things_to_do_df, on='park_code', how='outer')
 
-            if activities_selection:
-                pandas_where += 'join_amenities[join_amenities["amenity_name"].isin(amenities_selection)]'
-                if states_selection or parks_selection:
-                    pandas_where += " & "
+            #print(pandas_select_df.to_string(max_rows=100))
 
-            if states_selection:
-                pandas_where += 'join_amenities[join_amenities["park_states"].isin(activities_selection)]'
-                if parks_selection:
-                    pandas_where += " & "
+            # pandas_select_df = pd.merge(pandas_select_df, self.parking_lot_df, on='park_code', how='left')
+            # print(pandas_select_df.to_string(max_rows=10))
+            #pandas_select_df = pd.merge(undup_amenities, pandas_select_df, on='park_code', how='left')
+            #print(pandas_select_df.to_string(index=False, max_rows=10))
+            # if activities_selection:
+            #     pandas_select_df = join_amenities + '[join_amenities["activity_name"].isin(activities_selection)]'
+            #     if amenities_selection or states_selection or parks_selection:
+            #         pandas_where += " & "
+            #
+            # if activities_selection:
+            #     pandas_where += join_amenities + '[join_amenities["amenity_name"].isin(amenities_selection)]'
+            #     if states_selection or parks_selection:
+            #         pandas_where += " & "
+            #
+            # if states_selection:
+            #     pandas_where += join_amenities + '[join_amenities["park_states"].isin(activities_selection)]'
+            #     if parks_selection:
+            #         pandas_where += " & "
+            #
+            # if parks_selection:
+            #     pandas_where += join_amenities +'[join_amenities["park_name"].isin(activities_selection)]'
+            #     print(pandas_where)
 
-            if parks_selection:
-                pandas_where += 'join_amenities[join_amenities["park_name"].isin(activities_selection)]'
-
-            pandas_select_df = pd.DataFrame()
             ##fix below
-            print(exec(pandas_where))
+            #pandas_select_df = pd.merge(undup_activities, self.amenities_parks_df, on='park_code', how='left')
+
+            #print(pandas_select_df.to_string())
 
         #
         #     if activities_selection:
