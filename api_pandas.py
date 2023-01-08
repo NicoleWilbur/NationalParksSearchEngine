@@ -230,20 +230,25 @@ class APIPandas:
 
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
-    def fetch_results(self, activities_selection, amenities_selection, states_selection, parks_selection):
+    def fetch_results(self, activities_selection, amenities_selection, parks_selection, states_selection):
         park_list = []
         pandas_where = ""
         pandas_select_df = pd.DataFrame()
         #self.results_df = pd.DataFrame(data=data, columns=cols)
-        print(activities_selection)
+        #print(activities_selection)
         #print(self.activities_df.to_string())
         try:
-            activities_selection_df = self.activities_df[self.activities_df['activity_name'].isin(activities_selection)]
-            amenities_selection_df = self.amenities_parks_df[self.amenities_parks_df['amenity_name'].isin(amenities_selection)]
-            states_selection_df = self.activities_df[self.activities_df['park_states'].isin(parks_selection)]
-            print(states_selection_df.to_string())
+            activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].isin(activities_selection)].drop_duplicates()
+            amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].isin(amenities_selection)].drop_duplicates()
+            states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].isin(states_selection)].drop_duplicates()
+            parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].isin(parks_selection)].drop_duplicates()
+            print(parks_selection_df.to_string())
+            #pd.concat([df1, df2]).drop_duplicates()
+            # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
+            # pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) & activities_selection_df.isin(states_selection_df) & activities_selection_df.isin(parks_selection)]
             # print(undup_activities.to_string()
-            # pandas_select_df = pd.merge(pandas_select_df, self.campgrounds_df, on='park_code', how='left')
+            #pandas_select_df = pd.merge(activities_selection_df, amenities_selection_df, on='park_code', how='left')
+            # print(pandas_select_df.to_string())
             # del self.campgrounds_df
             # pandas_select_df = pd.merge(pandas_select_df, self.parking_lot_df, on='park_code', how='left')
             # del self.parking_lot_df
@@ -251,7 +256,7 @@ class APIPandas:
             # del self.places_df
             # pandas_select_df = pd.merge(pandas_select_df, self.things_to_do_df, on='park_code', how='left')
             # del self.things_to_do_df
-            print(pandas_select_df.to_string(max_rows=4))
+
             # if activities_selection:
             #     pandas_select_df = join_amenities + '[join_amenities["activity_name"].isin(activities_selection)]'
             #     if amenities_selection or states_selection or parks_selection:

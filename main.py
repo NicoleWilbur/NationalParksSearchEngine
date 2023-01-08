@@ -33,8 +33,9 @@ def main():
     data_handler = APIPandas(api_key)
     data_handler.get_data()
     distinct_activities, distinct_amenities, distinct_parks, distinct_states = data_handler.fetch_dropdown_list_data()
-    data_handler.fetch_results(['Wildlife Watching', 'Arts and Culture'], ['Restroom'], ['Acad'], ['ME'])
-
+    data_handler.fetch_results(['Wildlife Watching', 'Arts and Culture'], ['Restroom'], ['Acadia National Park'], ['ME'])
+    # print(distinct_parks)
+    # print(distinct_states)
 
 if __name__ == '__main__':
     main()
