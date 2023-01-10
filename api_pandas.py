@@ -273,8 +273,8 @@ class APIPandas:
                  "parking_lots_number_ADA_Step_Free_Spaces", "parking_lots_number_ADA_van_spaces",
                  "parking_lots_description"]], on='park_code', how='left')
             # print(self.campgrounds_df.to_string(max_rows=20))
-            print(results_df.to_string(max_rows=20))
-
+            print(results_df.to_string(max_rows=10))
+            return results_df
             park_info_dictionary = results_df.groupby('park_name').agg({'park_states': set, 'activity_name': set,
                                         'amenity_name': set, 'amenity_url': set, 'campground_name': set}).to_string()
             campground_info_dictionary = results_df.groupby('campground_name').agg({'campground_url': set,

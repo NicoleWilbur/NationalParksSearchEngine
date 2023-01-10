@@ -3,6 +3,7 @@ from api_data import *
 from gui_class import GUIInterface
 from decrypt_key import key_decryption
 from api_pandas import APIPandas
+from results_object import ParkResults
 
 
 def main():
@@ -33,7 +34,8 @@ def main():
     data_handler = APIPandas(api_key)
     data_handler.get_data()
     distinct_activities, distinct_amenities, distinct_parks, distinct_states = data_handler.fetch_dropdown_list_data()
-    data_handler.fetch_results(['Wildlife Watching', 'Arts and Culture'], ['Restroom'], ['Acadia National Park'], ['ME'])
+    #ParkResults(data_handler.fetch_results(['Wildlife Watching', 'Arts and Culture'], ['Restroom'], ['Acadia National Park'], ['ME']))
+    ParkResults.display_park(ParkResults(data_handler.fetch_results(['Wildlife Watching', 'Arts and Culture'], ['Restroom'], ['Acadia National Park'], ['ME'])))
     # print(distinct_parks)
     # print(distinct_states)
 
