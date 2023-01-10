@@ -243,15 +243,12 @@ class APIPandas:
             isin(states_selection)].drop_duplicates()
             parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
             isin(parks_selection)].drop_duplicates()
-            pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #or logic
+            # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
 
-            #or_logic_data = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #or logic
-            #and_logic_data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
-            #                               activities_selection_df.isin(states_selection_df) & activities_selection_df.
-            #                               isin(parks_selection_df)].drop_duplicates()
-            #pandas_select_df = pd.DataFrame(or_logic_data, columns=['park_code'])
-            #pandas_select_df = pd.DataFrame(and_logic_data, columns=['park_code'])
-
+            data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
+                                           activities_selection_df.isin(states_selection_df) & activities_selection_df.
+                                           isin(parks_selection_df)].drop_duplicates()
+            pandas_select_df = pd.DataFrame(data, columns=['park_code'])
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
             results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
             results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']],
@@ -276,23 +273,39 @@ class APIPandas:
                  "parking_lots_number_ADA_Step_Free_Spaces", "parking_lots_number_ADA_van_spaces",
                  "parking_lots_description"]], on='park_code', how='left')
             # print(self.campgrounds_df.to_string(max_rows=20))
-            print(results_df.to_string(max_rows=100))
+            print(results_df.to_string(max_rows=20))
 
-            results = results_df.groupby('park_name').agg({'park_states': set, 'activity_name': set, 'amenity_name': set,
-                                                           'amenity_url': set, 'campground_name': set, 'campground_url': set,
-                                                           'campground_road': set, 'campground_classification': set,
-                                                           'campground_general_ADA': set, 'campground_wheelchair_access': set,
-                                                           'campground_rv_info': set, 'campground_description': set,
-                                                           'campground_cell_reception': set, 'campground_camp_store': set,
-                                                           'campground_internet': set, 'campground_potable_water': set,
-                                                           'campground_toilets': set, 'campground_campsites_electric': set,
-                                                           'campground_staff_volunteer': set, 'places_title': set,
-                                                           'places_url': set, 'parking_lots_name': set,
-                                                           'parking_lots_ADA_facility_description': set,
-                                                           'parking_lots_is_lot_accessible': set,
-                                                           'parking_lots_number_oversized_spaces': set, 'parking_lots_number_ADA_spaces': set,
-                                                           'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}).to_string()
-            print(results)
+            park_info_dictionary = results_df.groupby('park_name').agg({'park_states': set, 'activity_name': set,
+                                        'amenity_name': set, 'amenity_url': set, 'campground_name': set}).to_string()
+            campground_info_dictionary = results_df.groupby('campground_name').agg({'campground_url': set,
+                                        'campground_road': set, 'campground_classification': set,
+                                        'campground_general_ADA': set, 'campground_wheelchair_access': set,
+                                        'campground_rv_info': set, 'campground_description': set,
+                                        'campground_cell_reception': set, 'campground_camp_store': set,
+                                        'campground_internet': set, 'campground_potable_water': set,
+                                        'campground_toilets': set, 'campground_campsites_electric': set,
+                                        'campground_staff_volunteer': set}).to_string()
+            places_info_dictionary = results_df.groupby('places_title').agg({'places_url': set}).to_string()
+            parking_lot_info_dictionary = results_df.groupby('parking_lots_name').agg({'parking_lots_ADA_facility_description': set,
+                                        'parking_lots_is_lot_accessible': set, 'parking_lots_number_oversized_spaces': set,
+                                        'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
+                                        'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}).to_string()
+            #
+            # 'campground_url': set,
+            # 'campground_road': set, 'campground_classification': set,
+            # 'campground_general_ADA': set, 'campground_wheelchair_access': set,
+            # 'campground_rv_info': set, 'campground_description': set,
+            # 'campground_cell_reception': set, 'campground_camp_store': set,
+            # 'campground_internet': set, 'campground_potable_water': set,
+            # 'campground_toilets': set, 'campground_campsites_electric': set,
+            # 'campground_staff_volunteer': set, 'places_title': set,
+            # 'places_url': set, 'parking_lots_name': set,
+            # 'parking_lots_ADA_facility_description': set,
+            # 'parking_lots_is_lot_accessible': set,
+            # 'parking_lots_number_oversized_spaces': set, 'parking_lots_number_ADA_spaces': set,
+            # 'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set
+
+            #print(results)
 
             #df.groupby('park_code').agg({'camp_ground': list, 'parking_lot': list}).to_dict(orient='index')
 
