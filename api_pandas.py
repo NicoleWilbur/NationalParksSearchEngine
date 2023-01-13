@@ -1,11 +1,5 @@
-import json
-
-import numpy as np
 import requests
 import pandas as pd
-import flat_table
-from api_data import jprint
-from decrypt_key import key_decryption
 
 
 class APIPandas:
@@ -165,52 +159,6 @@ class APIPandas:
         self.places_df = pd.DataFrame(data=data, columns=cols)
         # print(self.places_df.to_string())
 
-        # for item in results:
-        #     multiple = []
-        #     list = []
-        #     for park in item['relatedParks']:
-        #         multiple.append(park['parkCode'])
-        #     lst.append(self.dc(multiple))
-        #     lst += [self.dc(item['id']), self.dc(item['title']), self.dc(item['url'])]
-        #     data.append(lst)
-        #
-        # #print(data)
-        # self.places_df = pd.DataFrame(data=data, columns=cols)
-        # print(self.places_df.to_string())
-
-        # ##things to do
-        # cols = ["park_code", "things to do_id", "things to do_activity_name", "things to do_accessibility_information",
-        #         "things to do_location", "things to do_title", "things to do_url", "things to do_topic_name"]
-        # data = []
-        #
-        # response = requests.get(self.api_addresses[5] + self.api_key)
-        # results = response.json()['data']
-        # # jprint(results)
-        #
-        # for park in item['relatedParks']:
-        #     lst.append(park['parkCode'])
-        #     for item in results:
-        #         for names in item['activities']:
-        #             lst = [self.dc(item['id']), self.dc(names['name']), self.dc(item['accessibilityInformation']),
-        #                    self.dc(item['location']), self.dc(item['title']), self.dc(item['url'])]
-        #
-        #     multiple = []
-        #     for park in item['relatedParks']:
-        #         multiple.append(park['parkCode'])
-        #     lst.append(self.dc(multiple))
-        #     multiple.clear()
-        #
-        #     for topic in item['topics']:
-        #         multiple = (topic['name'])
-        #     # print(multiple)
-        #     lst.append(self.dc(multiple))
-        #
-        #     data.append(lst)
-
-        # print(list)
-        # self.things_to_do_df = pd.DataFrame(data=data, columns=cols)
-        # print(things_to_do_df.to_string(max_rows))
-
     def fetch_dropdown_list_data(self):
         distinct_activities_parks = []
         distinct_amenities = []
@@ -290,20 +238,6 @@ class APIPandas:
                                         'parking_lots_is_lot_accessible': set, 'parking_lots_number_oversized_spaces': set,
                                         'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
                                         'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}).to_string()
-            #
-            # 'campground_url': set,
-            # 'campground_road': set, 'campground_classification': set,
-            # 'campground_general_ADA': set, 'campground_wheelchair_access': set,
-            # 'campground_rv_info': set, 'campground_description': set,
-            # 'campground_cell_reception': set, 'campground_camp_store': set,
-            # 'campground_internet': set, 'campground_potable_water': set,
-            # 'campground_toilets': set, 'campground_campsites_electric': set,
-            # 'campground_staff_volunteer': set, 'places_title': set,
-            # 'places_url': set, 'parking_lots_name': set,
-            # 'parking_lots_ADA_facility_description': set,
-            # 'parking_lots_is_lot_accessible': set,
-            # 'parking_lots_number_oversized_spaces': set, 'parking_lots_number_ADA_spaces': set,
-            # 'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set
 
             #print(results)
 

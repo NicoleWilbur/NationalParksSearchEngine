@@ -1,7 +1,7 @@
 ###the correct package to install is mysql-connector-python
 import mysql.connector
 from mysql.connector import Error
-from results_object import ParkResults
+from park_results import ParkResults
 
 
 # Add connection

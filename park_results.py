@@ -21,12 +21,12 @@ class ParkResults:
              'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}).to_dict()
         # print(parking_lot_info_dictionary)
 
-        self.park_name = park_info_dictionary['park_name'][0]
-        self.park_state = park_info_dictionary['park_states']
-        self.park_activities = park_info_dictionary['activity_name']
-        self.park_amenities = park_info_dictionary['amenity_name']
-        self.park_amenities_urls = park_info_dictionary['amenity_url']
-        self.park_campground_name = campground_info_dictionary['campground_name']
+        # self.park_name = park_info_dictionary['park_name'][0]
+        # self.park_state = park_info_dictionary['park_states']
+        # self.park_activities = park_info_dictionary['activity_name']
+        # self.park_amenities = park_info_dictionary['amenity_name']
+        # self.park_amenities_urls = park_info_dictionary['amenity_url']
+        # self.park_campground_name = campground_info_dictionary['campground_name']
         #
         # self.park_information = park_information
         # self.park_url = park_url
@@ -34,9 +34,9 @@ class ParkResults:
         # self.park_tty_number = park_tty_number
         # self.park_email_address = park_email_address
 
-    def display_park(self):
-        print(self.park_name, self.park_state, self.park_activities, self.park_amenities, self.park_amenities_urls,
-              self.park_campground_name)
+    # def display_park(self):
+    #     print(self.park_name, self.park_state, self.park_activities, self.park_amenities, self.park_amenities_urls,
+    #           self.park_campground_name)
         #print('Name: {},   State: {},   Information: {}'.format(park.park_name, park.park_state, park.park_information))
         # return self.park_name + ", " + self.park_state + ", " + self.park_activities + ", " + self.park_amenities + ", " + \
         #        self.park_amenities_urls + ", " + self.park_campground_name
