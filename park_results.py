@@ -1,14 +1,24 @@
 class ParkResults:
 
-    def __init__(self, park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary):
-        self.park_name = park_info_dictionary
+    def __init__(self, park_info_df, campground_results_df, places_info, parking_lot_info):
+        # 'park_name': set, 'park_states': set, 'activity_name': set,
+        # 'amenity_name': set, 'amenity_url': set})
+        print(park_info_df)
+        row_count = park_info_df.shape[0]
+        print(row_count)
+        i = 0
+        for i in range(0, row_count):
+            self.park_name = park_info_df.loc[i, 'park_name']
+            self.park_states = park_info_df.loc[i, 'park_states']
+            self.park_activities = park_info_df.loc[i, 'activity_name']
+            self.park_amenities = park_info_df.loc[i, 'amenity_name']
+            self.park_amenities_urls = park_info_df.loc[i, 'amenity_url']
+
         print(self.park_name)
-        # self.park_name = park_info_dictionary['park_name']
-        # self.park_state = park_info_dictionary['park_states']
-        # self.park_activities = park_info_dictionary['activity_name']
-        # self.park_amenities = park_info_dictionary['amenity_name']
-        # self.park_amenities_urls = park_info_dictionary['amenity_url']
-        # self.park_campground_name = campground_info_dictionary['campground_name']
+        print(self.park_states)
+        print(self.park_activities)
+        print(self.park_amenities)
+        print(self.park_amenities_urls)
 
         # self.park_information = park_information
         # self.park_url = park_url
