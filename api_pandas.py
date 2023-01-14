@@ -34,7 +34,7 @@ class APIPandas:
             scrubbed = data
         return scrubbed
 
-    def get_data(self):
+    def get_api_data(self):
 
         ##activities_parks
         cols = ["park_code", "park_name", "park_states", "activity_name"]
@@ -184,24 +184,26 @@ class APIPandas:
     def fetch_results(self, activities_selection, amenities_selection, parks_selection, states_selection):
         try:
             activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
-            isin(activities_selection)].drop_duplicates()
+                                        isin(activities_selection)].drop_duplicates()
             amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].
-            isin(amenities_selection)].drop_duplicates()
+                                        isin(amenities_selection)].drop_duplicates()
             states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].
-            isin(states_selection)].drop_duplicates()
+                                        isin(states_selection)].drop_duplicates()
             parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
-            isin(parks_selection)].drop_duplicates()
+                                        isin(parks_selection)].drop_duplicates()
+
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
 
             data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
                                            activities_selection_df.isin(states_selection_df) & activities_selection_df.
                                            isin(parks_selection_df)].drop_duplicates()
-            pandas_select_df = pd.DataFrame(data, columns=['park_code'])
+            pandas_select_df = pd.DataFrame(data=data, columns=['park_code'])
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
             results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
-            results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']],
-                                  on='park_code', how='left')
-            results_df = pd.merge(results_df, self.campgrounds_df[['park_code', 'campground_name', 'campground_url',
+            park_results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']]
+                                                                    , on='park_code', how='left')
+
+            campground_results_df = pd.merge(pandas_select_df, self.campgrounds_df[['park_code', 'campground_name', 'campground_url',
                                                                    'campground_road', 'campground_classification',
                                                                    'campground_general_ADA',
                                                                    'campground_wheelchair_access',
@@ -211,21 +213,25 @@ class APIPandas:
                                                                    'campground_toilets',
                                                                    'campground_campsites_electric',
                                                                    'campground_staff_volunteer']], on='park_code',
-                                  how='left')
-            results_df = pd.merge(results_df, self.places_df[['park_code', 'places_title', 'places_url']],
-                                  on='park_code', how='left')
-            results_df = pd.merge(results_df, self.parking_lot_df[
-                ['park_code', "parking_lots_name", "parking_lots_ADA_facility_description",
-                 "parking_lots_is_lot_accessible", "parking_lots_number_oversized_spaces",
-                 "parking_lots_number_ADA_spaces",
-                 "parking_lots_number_ADA_Step_Free_Spaces", "parking_lots_number_ADA_van_spaces",
-                 "parking_lots_description"]], on='park_code', how='left')
-            # print(self.campgrounds_df.to_string(max_rows=20))
-            print(results_df.to_string(max_rows=10))
-            return results_df
-            park_info_dictionary = results_df.groupby('park_name').agg({'park_states': set, 'activity_name': set,
-                                        'amenity_name': set, 'amenity_url': set, 'campground_name': set}).to_string()
-            campground_info_dictionary = results_df.groupby('campground_name').agg({'campground_url': set,
+                                                                    how='left').drop_duplicates()
+            places_results_df = pd.merge(pandas_select_df, self.places_df[['park_code', 'places_title', 'places_url']],
+                                                                    on='park_code', how='left').drop_duplicates()
+            parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', "parking_lots_name",
+                                                                    "parking_lots_ADA_facility_description",
+                                                                    "parking_lots_is_lot_accessible", "parking_lots_number_oversized_spaces",
+                                                                    "parking_lots_number_ADA_spaces",
+                                                                    "parking_lots_number_ADA_Step_Free_Spaces",
+                                                                    "parking_lots_number_ADA_van_spaces",
+                                                                    "parking_lots_description"]], on='park_code',
+                                                                    how='left').drop_duplicates()
+            # print(campground_results_df.to_string(max_rows=10))
+            # print(places_results_df.to_string(max_rows=10))
+            # print(parking_lots_df.to_string(max_rows=10))
+            # print(park_results_df.to_string(max_rows=10))
+            park_info = park_results_df.groupby('park_name').agg({'park_states': set, 'activity_name': set,
+                                        'amenity_name': set, 'amenity_url': set})
+            print(park_info)
+            campground_info = campground_results_df.groupby('campground_name').agg({'campground_url': set,
                                         'campground_road': set, 'campground_classification': set,
                                         'campground_general_ADA': set, 'campground_wheelchair_access': set,
                                         'campground_rv_info': set, 'campground_description': set,
@@ -233,12 +239,13 @@ class APIPandas:
                                         'campground_internet': set, 'campground_potable_water': set,
                                         'campground_toilets': set, 'campground_campsites_electric': set,
                                         'campground_staff_volunteer': set}).to_string()
-            places_info_dictionary = results_df.groupby('places_title').agg({'places_url': set}).to_string()
-            parking_lot_info_dictionary = results_df.groupby('parking_lots_name').agg({'parking_lots_ADA_facility_description': set,
+            places_info = places_results_df.groupby('places_title').agg({'places_url': set}).to_string()
+            parking_lot_info= parking_lots_results_df.groupby('parking_lots_name').agg({'parking_lots_ADA_facility_description': set,
                                         'parking_lots_is_lot_accessible': set, 'parking_lots_number_oversized_spaces': set,
                                         'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
                                         'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}).to_string()
-
+            return park_info, campground_info, places_info, parking_lot_info
+            print(campground_info_dictionary)
             #print(results)
 
             #df.groupby('park_code').agg({'camp_ground': list, 'parking_lot': list}).to_dict(orient='index')

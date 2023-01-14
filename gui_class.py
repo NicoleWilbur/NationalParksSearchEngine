@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import LEFT, BOTH, RIGHT, END, X, TOP, messagebox
-from db_connection import MySQLConnector
+
+from api_pandas import APIPandas
 
 
 class GUIInterface:
@@ -224,7 +225,7 @@ class GUIInterface:
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
 
-        results_list = MySQLConnector.fetch_results(self.database_connection, self.activities_selection,
+        results_list = APIPandas.fetch_results(self.database_connection, self.activities_selection,
                                                        self.amenities_selection, self.states_selection,
                                                        self.parks_selection)
 
