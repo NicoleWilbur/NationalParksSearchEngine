@@ -233,7 +233,7 @@ class APIPandas:
             park_info_df = pd.DataFrame(park_results_df.groupby('park_code').agg({'park_name': set, 'park_states': set, 'activity_name': set,
                                         'amenity_name': set, 'amenity_url': set}))
             park_info_df.index = range(len(park_info_df))
-            campground_info = pd.DataFrame(campground_results_df.groupby('park_code').agg({'campground_name': set, 'campground_url': set,
+            campground_info_df = pd.DataFrame(campground_results_df.groupby('park_code').agg({'campground_name': set, 'campground_url': set,
                                         'campground_road': set, 'campground_classification': set,
                                         'campground_general_ADA': set, 'campground_wheelchair_access': set,
                                         'campground_rv_info': set, 'campground_description': set,
@@ -241,15 +241,20 @@ class APIPandas:
                                         'campground_internet': set, 'campground_potable_water': set,
                                         'campground_toilets': set, 'campground_campsites_electric': set,
                                         'campground_staff_volunteer': set}))
-            places_info = pd.DataFrame(places_results_df.groupby('places_title').agg({'places_url': set}))
-            parking_lot_info = pd.DataFrame(parking_lots_results_df.groupby('parking_lots_name').agg({'parking_lots_ADA_facility_description': set,
+            campground_info_df.index = range(len(campground_info_df))
+
+            places_info_df = pd.DataFrame(places_results_df.groupby('park_code').agg({'places_title': set, 'places_url': set}))
+            places_info_df.index = range(len(places_info_df))
+
+            parking_lot_info_df = pd.DataFrame(parking_lots_results_df.groupby('park_code').agg({'parking_lots_name': set, 'parking_lots_ADA_facility_description': set,
                                         'parking_lots_is_lot_accessible': set, 'parking_lots_number_oversized_spaces': set,
                                         'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
                                         'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}))
-
+            parking_lot_info_df.index = range(len(parking_lot_info_df))
             print(park_info_df)
-            ParkResults(park_info_df, campground_info, places_info, parking_lot_info)
-            return park_info_df, campground_info, places_info, parking_lot_info
+            print(parking_lot_info_df)
+            ParkResults(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
+            return park_info_df, campground_info_df, places_info_df, parking_lot_info_df
 
             #print(results)
 
