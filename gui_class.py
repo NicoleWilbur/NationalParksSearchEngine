@@ -2,12 +2,13 @@ import tkinter as tk
 from tkinter import LEFT, BOTH, RIGHT, END, X, TOP, messagebox
 
 from api_pandas import APIPandas
+from park_results import ParkResults
 
 
 class GUIInterface:
 
-    def __init__(self, distinct_activities, distinct_amenities, distinct_parks, distinct_states, my_init_cnxn):
-        self.database_connection = my_init_cnxn
+    def __init__(self, data_handler, distinct_activities, distinct_amenities, distinct_parks, distinct_states):
+        self.data_handler = data_handler
         self.activities_list = distinct_activities
         self.amenities_list = distinct_amenities
         self.name_list = distinct_parks
@@ -225,9 +226,10 @@ class GUIInterface:
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
 
-        results_list = APIPandas.fetch_results(self.database_connection, self.activities_selection,
-                                                       self.amenities_selection, self.states_selection,
-                                                       self.parks_selection)
+        park_info_df, campground_info_df, places_info_df, parking_lot_info_df = self.data_handler.fetch_results(
+            self.activities_selection, self.amenities_selection, self.states_selection, self.parks_selection)
+        results_list = ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
+
 
         back = tk.Button(
             self.frame2,
@@ -276,17 +278,15 @@ class GUIInterface:
         # setting scrollbar command parameter to listbox.yview method its yview because we need to have a vertical view
         scrollbar.config(command=resultsbox.yview)
 
-        i = 1
-        for result in results_list:
+        # i = 1
+        # for result in results_list:
             # print('Name : {}, Information : {}'.format(park.park_name, park.park_information))
             # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
             # # parks_var = tk.StringVar(value=park.display_park())
 
-            resultsbox.insert(END, "Park #" + str(i) + "\n" + 'Name : {} Information : {}'.format(result.park_name,
-                                                                                                  result.park_information) +
-                              "\n\n")
-            resultsbox.pack()
-            i += 1
+        resultsbox.insert(END, results_list.to_string())
+        resultsbox.pack()
+
 
         # creates close and print button widgets
         save_results = tk.Button(

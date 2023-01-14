@@ -168,11 +168,11 @@ class APIPandas:
         distinct_states = []
         length_to_find = 2
         try:
-            distinct_activities_parks = self.activities_df["activity_name"].unique()
-            distinct_amenities = self.amenities_parks_df["amenity_name"].unique()
-            distinct_parks = self.activities_df["park_name"].unique()
+            distinct_activities_parks = self.activities_df["activity_name"].unique().tolist()
+            distinct_amenities = self.amenities_parks_df["amenity_name"].unique().tolist()
+            distinct_parks = self.activities_df["park_name"].unique().tolist()
             distinct_states = self.activities_df.loc[
-                self.activities_df["park_states"].str.len() == length_to_find, "park_states"].unique()
+                self.activities_df["park_states"].str.len() == length_to_find, "park_states"].unique().tolist()
             # states_list = self.activities_df["park_states"].unique()
             # for state in states_list:
             #     if len(state) == 2:
@@ -253,7 +253,7 @@ class APIPandas:
             parking_lot_info_df.index = range(len(parking_lot_info_df))
             print(park_info_df)
             print(parking_lot_info_df)
-            ParkResults(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
+            #ParkResults(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
             return park_info_df, campground_info_df, places_info_df, parking_lot_info_df
 
             #print(results)
