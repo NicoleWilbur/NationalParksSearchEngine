@@ -184,6 +184,10 @@ class APIPandas:
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
     def fetch_results(self, activities_selection, amenities_selection, parks_selection, states_selection):
+        # print(self.activities_df.to_string())
+        print(activities_selection, amenities_selection, parks_selection, states_selection)
+        print(type(activities_selection), type(amenities_selection), type(parks_selection), type(states_selection))
+        print(self.activities_df.to_string(max_rows=2))
         try:
             activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
                                         isin(activities_selection)].drop_duplicates()
@@ -193,7 +197,7 @@ class APIPandas:
                                         isin(states_selection)].drop_duplicates()
             parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
                                         isin(parks_selection)].drop_duplicates()
-
+            print(parks_selection_df.to_string())
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
 
             data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
@@ -226,7 +230,7 @@ class APIPandas:
                                                                     "parking_lots_number_ADA_van_spaces",
                                                                     "parking_lots_description"]], on='park_code',
                                                                     how='left').drop_duplicates()
-            # print(campground_results_df.to_string(max_rows=10))
+            print(campground_results_df.to_string(max_rows=10))
             # print(places_results_df.to_string(max_rows=10))
             # print(parking_lots_df.to_string(max_rows=10))
             # print(park_results_df.to_string(max_rows=10))
@@ -251,7 +255,7 @@ class APIPandas:
                                         'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
                                         'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}))
             parking_lot_info_df.index = range(len(parking_lot_info_df))
-            print(park_info_df)
+            print(campground_info_df.to_string())
             print(parking_lot_info_df)
             #ParkResults(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
             return park_info_df, campground_info_df, places_info_df, parking_lot_info_df

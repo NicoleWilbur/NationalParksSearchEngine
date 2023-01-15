@@ -225,10 +225,11 @@ class GUIInterface:
     def load_frame2(self):
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
+        print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
         #park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
         park_info_df, campground_info_df, places_info_df, parking_lot_info_df = self.data_handler.fetch_results(
-            self.activities_selection, self.amenities_selection, self.states_selection, self.parks_selection)
+            self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
         print("campgground INfo df: ", campground_info_df)
         results_list = ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
