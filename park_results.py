@@ -52,14 +52,16 @@ class ParkResults:
             cls.places_url = ', '.join(places_info_df.loc[i, 'places_url'])
             cls.display_places(cls)
 
-        return cls.results_list
+        # return cls.results_list
 
     def display_park(cls):
-        cls.results_list = 'Name: {}, State: {}, Activities: {}, Amenities: {}, Amenities_URL: {}\n\n'.format(cls.park_name,
-                cls.park_states, cls.park_activities, cls.park_amenities, cls.park_amenities_urls)
+        cls.results_list = 'Name: {}  State: {}   Activities: {} \n\nAmenities: {}, \n\nAmenities_URL:' \
+                           ' {}\n\n'.format(cls.park_name, cls.park_states, cls.park_activities, cls.park_amenities,
+                                            cls.park_amenities_urls)
 
     def display_campgrounds(cls):
-        cls.results_list += 'Campground Name: {}, Campground Description: {}, Campground URLs: {}, Campground Roads: {}, ' \
+        cls.results_list += 'Campground Name: {}\nCampground Description: {}\n\n Campground URLs: {}, ' \
+                            '\n\nCampground Roads: {}, ' \
                  'Campground Classification: {}, Campground General ADA Information: {}, Campground Wheelchair Access: {}, ' \
                  'Campground RV Information: {} Campground Cell Reception: {}, Campground Camp Store: {}, ' \
                  'Campground Internet: {}, Campground Potable Water: {}, Campground Toilets: {}, ' \

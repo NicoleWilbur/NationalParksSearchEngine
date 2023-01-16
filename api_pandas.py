@@ -183,26 +183,38 @@ class APIPandas:
 
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
-    def fetch_results(self, activities_selection, amenities_selection, parks_selection, states_selection):
+    def fetch_results(self, activities_selection = [], amenities_selection = [], parks_selection = [], states_selection = []):
         # print(self.activities_df.to_string())
         print(activities_selection, amenities_selection, parks_selection, states_selection)
         print(type(activities_selection), type(amenities_selection), type(parks_selection), type(states_selection))
         print(self.activities_df.to_string(max_rows=2))
         try:
-            activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
-                                        isin(activities_selection)].drop_duplicates()
-            amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].
-                                        isin(amenities_selection)].drop_duplicates()
-            states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].
-                                        isin(states_selection)].drop_duplicates()
-            parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
-                                        isin(parks_selection)].drop_duplicates()
-            print(parks_selection_df.to_string())
+            if activities_selection:
+                activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
+                                            isin(activities_selection)].drop_duplicates()
+            else:
+                activities_selection_df = pd.DataFrame()
+            if amenities_selection:
+                amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].
+                                            isin(amenities_selection)].drop_duplicates()
+            else:
+                amenities_selection_df = pd.DataFrame()
+            if states_selection:
+                states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].
+                                            isin(states_selection)].drop_duplicates()
+            else:
+                states_selection_df = pd.DataFrame()
+            if parks_selection:
+                parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
+                                            isin(parks_selection)].drop_duplicates()
+            else:
+                parks_selection_df = pd.DataFrame()
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
 
             data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
                                            activities_selection_df.isin(states_selection_df) & activities_selection_df.
                                            isin(parks_selection_df)].drop_duplicates()
+            print(data.to_string())
             pandas_select_df = pd.DataFrame(data=data, columns=['park_code'])
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
             results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')

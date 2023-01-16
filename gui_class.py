@@ -87,7 +87,7 @@ class GUIInterface:
             fg="black",
             cursor="hand2",
             activeforeground=self.bg_color,
-            command=lambda: [self.root.destroy()]
+            command=lambda: [self.root.quit()]
         )
         close.pack(side=TOP, pady=10)
 
@@ -225,13 +225,13 @@ class GUIInterface:
     def load_frame2(self):
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
-        print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
+        # print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
         #park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
         park_info_df, campground_info_df, places_info_df, parking_lot_info_df = self.data_handler.fetch_results(
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
-        print("campgground INfo df: ", campground_info_df)
-        results_list = ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
+        # print("campgground INfo df: ", campground_info_df)
+        ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
 
         back = tk.Button(
@@ -286,8 +286,8 @@ class GUIInterface:
             # print('Name : {}, Information : {}'.format(park.park_name, park.park_information))
             # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
             # # parks_var = tk.StringVar(value=park.display_park())
-        print(results_list)
-        resultsbox.insert(END, results_list)
+        # print(results_list)
+        resultsbox.insert(END, park_info_df)
         resultsbox.pack()
 
 
@@ -299,7 +299,7 @@ class GUIInterface:
             fg="black",
             cursor="hand2",
             activeforeground=self.bg_color,
-            command=lambda: self.save_to_file(results_list)
+            command=lambda: self.save_to_file(park_info_df)
         )
         save_results.pack(side=TOP, pady=10)
 
