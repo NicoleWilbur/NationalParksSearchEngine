@@ -69,7 +69,7 @@ class GUIInterface:
 
     def selection_check(self, activities_selection, amenities_selection, states_selection, parks_selection):
         if not activities_selection and not amenities_selection and not states_selection and not parks_selection:
-            messagebox.showerror("No Selections Chosen", "Please choose at least one item.")
+            messagebox.showerror("Please choose at least one item.")
         else:
             self.load_frame2()
 
@@ -230,9 +230,12 @@ class GUIInterface:
         #park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
         park_info_df, campground_info_df, places_info_df, parking_lot_info_df = self.data_handler.fetch_results(
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
-        # print("campgground INfo df: ", campground_info_df)
-        ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
+        if park_info_df.empty and campground_info_df.empty and places_info_df.empty and parking_lot_info_df.empty:
+            messagebox.showerror("No results found. Try a different search.")
+            self.load_frame1()
+        else:
+            ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
         back = tk.Button(
             self.frame2,
