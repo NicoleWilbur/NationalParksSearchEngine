@@ -20,13 +20,13 @@ class GUIInterface:
         self.amenities_selection = []
 
         self.root = tk.Tk()
-        self.root.title("National Parks Service Search Engine")
-        self.root.geometry("+50+50")
+        self.root.title('National Parks Service Search Engine')
+        self.root.geometry('+50+50')
         # self.root.eval('tk::PlaceWindow %s center' % self.root.winfo_pathname(self.root.winfo_id()))
 
         # color scheme
-        self.bg_color = "#bf5720"
-        self.fg_color = "White"
+        self.bg_color = '#bf5720'
+        self.fg_color = 'White'
 
         # create a frame widgets
         self.frame1 = tk.Frame(self.root, width=1000, height=600, bg=self.bg_color)
@@ -69,23 +69,23 @@ class GUIInterface:
 
     def selection_check(self, activities_selection, amenities_selection, states_selection, parks_selection):
         if not activities_selection and not amenities_selection and not states_selection and not parks_selection:
-            messagebox.showerror("Please choose at least one item.")
+            messagebox.showinfo(message='Please choose at least one item.')
         else:
             self.load_frame2()
 
     def save_to_file(self, results_list):
         with open('config.txt', 'a') as f:
             for result in results_list:
-                f.write('Name : {} Information : {}'.format(result.park_name, result.park_information) + "\n\n")
+                f.write('Name : {} Information : {}'.format(result.park_name, result.park_information) + '\n\n')
         f.close()
 
     def close_button(self, frame):
         close = tk.Button(
             frame,
-            text="Close",
-            font=("TkTextFont", 12),
-            fg="black",
-            cursor="hand2",
+            text='Close',
+            font=('TkTextFont', 12),
+            fg='black',
+            cursor='hand2',
             activeforeground=self.bg_color,
             command=lambda: [self.root.quit()]
         )
@@ -100,10 +100,10 @@ class GUIInterface:
         # in frame label widget
         tk.Label(
             self.frame1,
-            text="Search Options",
+            text='Search Options',
             bg=self.bg_color,
             fg=self.fg_color,
-            font=("TkMenuFont", 14)
+            font=('TkMenuFont', 14)
         ).pack()
 
         # subframes for layout and packing
@@ -123,19 +123,19 @@ class GUIInterface:
         parks_var = tk.StringVar(value=self.parks_list)
 
         # search box labels
-        activities_label = tk.Label(frame1a, text="Select activities:  ", font=("TkHeaderFont", 10),
+        activities_label = tk.Label(frame1a, text='Select activities:  ', font=('TkHeaderFont', 10),
                                     bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
         activities_label.pack(expand=True, fill=BOTH, side=LEFT)
 
-        amenities_label = tk.Label(frame1a, text="Select amenities:  ", font=("TkHeaderFont", 10),
+        amenities_label = tk.Label(frame1a, text='Select amenities:  ', font=('TkHeaderFont', 10),
                                    bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
         amenities_label.pack(expand=True, fill=BOTH, side=LEFT)
 
-        states_label = tk.Label(frame1c, text="Select states/territories:  ", font=("TkHeaderFont", 10),
+        states_label = tk.Label(frame1c, text='Select states/territories:  ', font=('TkHeaderFont', 10),
                                 bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
         states_label.pack(expand=True, fill=BOTH, side=LEFT)
 
-        parks_label = tk.Label(frame1c, text="Select parks:  ", font=("TkHeaderFont", 10),
+        parks_label = tk.Label(frame1c, text='Select parks:  ', font=('TkHeaderFont', 10),
                                bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
         parks_label.pack(expand=True, fill=BOTH, side=LEFT)
 
@@ -143,7 +143,7 @@ class GUIInterface:
         activities_listbox = tk.Listbox(
             frame1b,
             listvariable=activities_var,
-            selectmode="multiple",
+            selectmode='multiple',
             exportselection=False,
             width=30)
         activities_listbox.pack(expand=True, fill=X, side=LEFT)
@@ -162,7 +162,7 @@ class GUIInterface:
         amenities_listbox = tk.Listbox(
             frame1b,
             listvariable=amenities_var,
-            selectmode="multiple",
+            selectmode='multiple',
             exportselection=False,
             width=30)
         amenities_listbox.pack(expand=True, fill=X, side=LEFT)
@@ -178,7 +178,7 @@ class GUIInterface:
         states_listbox = tk.Listbox(
             frame1d,
             listvariable=states_var,
-            selectmode="multiple",
+            selectmode='multiple',
             exportselection=False,
             width=30)
         states_listbox.pack(expand=True, fill=BOTH, side=LEFT)
@@ -193,7 +193,7 @@ class GUIInterface:
         parks_listbox = tk.Listbox(
             frame1d,
             listvariable=parks_var,
-            selectmode="multiple",
+            selectmode='multiple',
             exportselection=False,
             width=30)
         parks_listbox.pack(expand=True, fill=BOTH, side=LEFT)
@@ -209,10 +209,10 @@ class GUIInterface:
         # macOS bug with Tkinter: button backgrounds do not work unless use tkmacos; leaving for Windows compatibility
         search = tk.Button(
             self.frame1,
-            text="Fetch!",
-            font=("TkTextFont", 12),
-            fg="black",
-            cursor="hand2",
+            text='Fetch!',
+            font=('TkTextFont', 12),
+            fg='black',
+            cursor='hand2',
             activeforeground=self.bg_color,
             command=lambda: [self.selection_check(self.get_activities_selection(activities_listbox),
                                                   self.get_amenities_selection(amenities_listbox),
@@ -232,17 +232,17 @@ class GUIInterface:
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
         if park_info_df.empty and campground_info_df.empty and places_info_df.empty and parking_lot_info_df.empty:
-            messagebox.showerror("No results found. Try a different search.")
+            messagebox.showinfo(message='No results found. Try a different search.')
             self.load_frame1()
         else:
             ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
         back = tk.Button(
             self.frame2,
-            text="Back",
-            font=("TkTextFont", 12),
-            fg="black",
-            cursor="hand2",
+            text='Back',
+            font=('TkTextFont', 12),
+            fg='black',
+            cursor='hand2',
             activeforeground=self.bg_color,
             command=lambda: [self.load_frame1(), self.activities_selection.clear(), self.amenities_selection.clear(),
                              self.states_selection.clear(), self.parks_selection.clear()]
@@ -252,18 +252,18 @@ class GUIInterface:
         # create label widget for instructions
         tk.Label(
             self.frame2,
-            text="Results",
+            text='Results',
             bg=self.bg_color,
             fg=self.fg_color,
-            font=("TkHeadingFont", 20)
+            font=('TkHeadingFont', 20)
         ).pack(side=TOP, pady=10)
 
         tk.Label(self.frame2,
-                 text="Parks Meeting Your Search of:\n" + str(self.activities_selection) + "\n" + str(
+                 text='Parks Meeting Your Search of:\n' + str(self.activities_selection) + '\n' + str(
                      self.amenities_selection),
                  bg=self.bg_color,
                  fg=self.fg_color,
-                 font=("TkTextFont", 12)
+                 font=('TkTextFont', 12)
                  ).pack()
 
         frame2a = tk.Frame(self.frame2)
@@ -297,10 +297,10 @@ class GUIInterface:
         # creates close and print button widgets
         save_results = tk.Button(
             self.frame2,
-            text="Save",
-            font=("TkTextFont", 12),
-            fg="black",
-            cursor="hand2",
+            text='Save',
+            font=('TkTextFont', 12),
+            fg='black',
+            cursor='hand2',
             activeforeground=self.bg_color,
             command=lambda: self.save_to_file(park_info_df)
         )

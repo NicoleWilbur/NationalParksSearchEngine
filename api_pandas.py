@@ -10,11 +10,11 @@ class APIPandas:
 
     def __init__(self, api_key):
         self.api_key = api_key
-        self.api_addresses = ["https://developer.nps.gov/api/v1/activities/parks?limit=99000",
-                              "https://developer.nps.gov/api/v1/amenities/parksplaces?limit=99000",
-                              "https://developer.nps.gov/api/v1/campgrounds?limit=99000?",
-                              "https://developer.nps.gov/api/v1/parkinglots?limit=99000",
-                              "https://developer.nps.gov/api/v1/places?limit=99000"]
+        self.api_addresses = ['https://developer.nps.gov/api/v1/activities/parks?limit=99000',
+                              'https://developer.nps.gov/api/v1/amenities/parksplaces?limit=99000',
+                              'https://developer.nps.gov/api/v1/campgrounds?limit=99000?',
+                              'https://developer.nps.gov/api/v1/parkinglots?limit=99000',
+                              'https://developer.nps.gov/api/v1/places?limit=99000']
         self.activities_df = []
         self.amenities_parks_df = []
         self.campgrounds_df = []
@@ -27,12 +27,12 @@ class APIPandas:
 
     @staticmethod
     def dc(data):
-        string = ""
+        string = ''
         if not data:
-            scrubbed = "No Data"
+            scrubbed = 'No Data'
         elif isinstance(data, list):
             for i in data:
-                string += i + " & "
+                string += i + ' & '
             scrubbed = string[:-2]
         else:
             scrubbed = data
@@ -41,11 +41,11 @@ class APIPandas:
     def get_api_data(self):
 
         ##activities_parks
-        cols = ["park_code", "park_name", "park_states", "activity_name"]
+        cols = ['park_code', 'park_name', 'park_states', 'activity_name']
         data = []
 
         response = requests.get(self.api_addresses[0] + self.api_key)
-        results = response.json()["data"]
+        results = response.json()['data']
 
         for item in results:
             for park in item['parks']:
@@ -55,35 +55,35 @@ class APIPandas:
         self.activities_df = pd.DataFrame(data=data, columns=cols)
 
         ##amenities_parks
-        cols = ["park_code", "amenity_name", "amenity_url"]
+        cols = ['park_code', 'amenity_name', 'amenity_url']
         data = []
 
         response = requests.get(self.api_addresses[1] + self.api_key)
-        results = response.json()["data"]
+        results = response.json()['data']
 
         for item in results:
-            for park in item[0]["parks"]:
-                for place in park["places"]:
-                    lst = [self.dc(park["parkCode"]), self.dc(item[0]["name"]), self.dc(place["url"])]
+            for park in item[0]['parks']:
+                for place in park['places']:
+                    lst = [self.dc(park['parkCode']), self.dc(item[0]['name']), self.dc(place['url'])]
                     data.append(lst)
         self.amenities_parks_df = pd.DataFrame(data=data, columns=cols)
 
         ##campgrounds
-        cols = ["park_code", "campground_id", "campground_name", "campground_url", "campground_road",
-                "campground_classification", "campground_general_ADA", "campground_wheelchair_access",
-                "campground_rv_allowed", "campground_rv_info", "campground_rv_max_length",
-                "campground_trailers_allowed",
-                "campground_trailer_max_length", "campground_description", "campground_cell_reception",
-                "campground_camp_store", "campground_dump_station", "campground_internet", "campground_potable_water",
-                "campground_showers", "campground_toilets", "campground_campsites_electric",
-                "campground_campsites_group",
-                "campground_campsites_horse", "campground_campsites_other", "campground_campsites_rv_only",
-                "campground_campsites_tent_only", "campground_campsites_boat_ramp", "campground_total_sites",
-                "campground_staff_volunteer"]
+        cols = ['park_code', 'campground_id', 'campground_name', 'campground_url', 'campground_road',
+                'campground_classification', 'campground_general_ADA', 'campground_wheelchair_access',
+                'campground_rv_allowed', 'campground_rv_info', 'campground_rv_max_length',
+                'campground_trailers_allowed',
+                'campground_trailer_max_length', 'campground_description', 'campground_cell_reception',
+                'campground_camp_store', 'campground_dump_station', 'campground_internet', 'campground_potable_water',
+                'campground_showers', 'campground_toilets', 'campground_campsites_electric',
+                'campground_campsites_group',
+                'campground_campsites_horse', 'campground_campsites_other', 'campground_campsites_rv_only',
+                'campground_campsites_tent_only', 'campground_campsites_boat_ramp', 'campground_total_sites',
+                'campground_staff_volunteer']
         data = []
 
         response = requests.get(self.api_addresses[2] + self.api_key)
-        results = response.json()["data"]
+        results = response.json()['data']
         # jprint(results)
 
         for item in results:
@@ -112,15 +112,15 @@ class APIPandas:
         # print(campgrounds_df.to_string())
 
         ##parking_lots
-        cols = ["parking_lots_id", "parking_lots_name", "parking_lots_ADA_facility_description",
-                "parking_lots_is_lot_accessible", "parking_lots_number_oversized_spaces",
-                "parking_lots_number_ADA_spaces",
-                "parking_lots_number_ADA_Step_Free_Spaces", "parking_lots_number_ADA_van_spaces",
-                "parking_lots_description", "park_code"]
+        cols = ['parking_lots_id', 'parking_lots_name', 'parking_lots_ADA_facility_description',
+                'parking_lots_is_lot_accessible', 'parking_lots_number_oversized_spaces',
+                'parking_lots_number_ADA_spaces',
+                'parking_lots_number_ADA_Step_Free_Spaces', 'parking_lots_number_ADA_van_spaces',
+                'parking_lots_description', 'park_code']
         data = []
 
         response = requests.get(self.api_addresses[3] + self.api_key)
-        results = response.json()["data"]
+        results = response.json()['data']
         # jprint(results)
 
         for item in results:
@@ -141,7 +141,7 @@ class APIPandas:
         # print(parking_lot_df.to_string())
 
         ##places
-        cols = ["park_code", "places_id", "places_title", "places_url"]
+        cols = ['park_code', 'places_id', 'places_title', 'places_url']
         data = []
 
         response = requests.get(self.api_addresses[4] + self.api_key)
@@ -170,18 +170,18 @@ class APIPandas:
         distinct_states = []
         length_to_find = 2
         try:
-            distinct_activities_parks = self.activities_df["activity_name"].unique().tolist()
-            distinct_amenities = self.amenities_parks_df["amenity_name"].unique().tolist()
-            distinct_parks = self.activities_df["park_name"].unique().tolist()
+            distinct_activities_parks = self.activities_df['activity_name'].unique().tolist()
+            distinct_amenities = self.amenities_parks_df['amenity_name'].unique().tolist()
+            distinct_parks = self.activities_df['park_name'].unique().tolist()
             distinct_states = self.activities_df.loc[
-                self.activities_df["park_states"].str.len() == length_to_find, "park_states"].unique().tolist()
-            # states_list = self.activities_df["park_states"].unique()
+                self.activities_df['park_states'].str.len() == length_to_find, 'park_states'].unique().tolist()
+            # states_list = self.activities_df['park_states'].unique()
             # for state in states_list:
             #     if len(state) == 2:
             #         distinct_states.append(state)
 
         except ConnectionError:
-            print("4: An error occurred; please try again.")
+            print('4: An error occurred; please try again.')
 
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
@@ -263,11 +263,11 @@ class APIPandas:
                     not states_selection_df.empty:
                 data = states_selection_df.drop_duplicates()
             else:
-                messagebox.showerror("Yikes! Something went wrong. Please try another selection.")
+                messagebox.showerror('Yikes! Something went wrong. Please try another selection.')
             # data = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
             #                                activities_selection_df.isin(states_selection_df) & activities_selection_df.
             #                                isin(parks_selection_df)].drop_duplicates()
-            print("A; ", data.to_string())
+            print('A; ', data.to_string())
             pandas_select_df = pd.DataFrame(data=data, columns=['park_code'])
             # pandas_select_df = pd.concat([activities_selection_df, amenities_selection_df, states_selection_df], parks_selection_df).drop_duplicates() #--or logic
             results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
@@ -287,13 +287,13 @@ class APIPandas:
                                                                     how='left').drop_duplicates()
             places_results_df = pd.merge(pandas_select_df, self.places_df[['park_code', 'places_title', 'places_url']],
                                                                     on='park_code', how='left').drop_duplicates()
-            parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', "parking_lots_name",
-                                                                    "parking_lots_ADA_facility_description",
-                                                                    "parking_lots_is_lot_accessible", "parking_lots_number_oversized_spaces",
-                                                                    "parking_lots_number_ADA_spaces",
-                                                                    "parking_lots_number_ADA_Step_Free_Spaces",
-                                                                    "parking_lots_number_ADA_van_spaces",
-                                                                    "parking_lots_description"]], on='park_code',
+            parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', 'parking_lots_name',
+                                                                    'parking_lots_ADA_facility_description',
+                                                                    'parking_lots_is_lot_accessible', 'parking_lots_number_oversized_spaces',
+                                                                    'parking_lots_number_ADA_spaces',
+                                                                    'parking_lots_number_ADA_Step_Free_Spaces',
+                                                                    'parking_lots_number_ADA_van_spaces',
+                                                                    'parking_lots_description']], on='park_code',
                                                                     how='left').drop_duplicates()
             #print(campground_results_df.to_string(max_rows=10))
             # print(places_results_df.to_string(max_rows=10))
@@ -331,10 +331,10 @@ class APIPandas:
 
             # for park_code in pandas_select_df.to_list():
             #     park_list += park_name
-            #     park_state = "foo"
-            #     park_information = "boo"
+            #     park_state = 'foo'
+            #     park_information = 'boo'
             #     park_list.append(ParkResults(park_name[0], park_state, park_information))
-            # print("A")
+            # print('A')
 
             # for park in park_list:
             #     print('Name: {},   State: {},   Information: {}'.format(park.park_name, park.park_state, park.park_information))
@@ -344,4 +344,4 @@ class APIPandas:
 
 
         except ConnectionError:
-            print("4: Connection interrupted; please try again.")
+            print('4: Connection interrupted; please try again.')
