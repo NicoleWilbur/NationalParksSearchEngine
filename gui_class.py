@@ -228,14 +228,15 @@ class GUIInterface:
         # print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
         #park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
-        park_info_df, campground_info_df, places_info_df, parking_lot_info_df = self.data_handler.fetch_results(
+        park_info_df, campground_results_df, parking_lot_results_df = self.data_handler.fetch_results(
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
-        if park_info_df.empty and campground_info_df.empty and places_info_df.empty and parking_lot_info_df.empty:
+        if park_info_df.empty and campground_results_df.empty and parking_lot_results_df.empty:
             messagebox.showinfo(message='No results found. Try a different search.')
             self.load_frame1()
         else:
-            ParkResults.param_constructor(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
+            print("boo")
+            ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
 
         back = tk.Button(
             self.frame2,
