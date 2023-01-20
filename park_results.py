@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class ParkResults:
 
     def __init__(self):
@@ -8,6 +11,9 @@ class ParkResults:
         activity_list = []
         amenity_list = []
         state_list = []
+       # joined = pd.merge(park_info_df, campground_results_df, left_on='park_code', right_on='park_code', how='left')
+        print("foo")
+        #print(joined.to_string())
         for i in range(len(park_info_df['park_name'])):
             for park in park_info_df['park_name'][i]:
                 print(park)

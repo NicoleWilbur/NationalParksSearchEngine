@@ -125,11 +125,11 @@ class GUIInterface:
         # search box labels
         activities_label = tk.Label(frame1a, text='Select activities:  ', font=('TkHeaderFont', 10),
                                     bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
-        activities_label.pack(expand=True, fill=BOTH, side=LEFT)
+        activities_label.pack(expand=True, anchor="center", side=LEFT)
 
         amenities_label = tk.Label(frame1a, text='Select amenities:  ', font=('TkHeaderFont', 10),
                                    bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
-        amenities_label.pack(expand=True, fill=BOTH, side=LEFT)
+        amenities_label.pack(expand=True, anchor="center", side=RIGHT)
 
         states_label = tk.Label(frame1c, text='Select states/territories:  ', font=('TkHeaderFont', 10),
                                 bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
@@ -148,7 +148,7 @@ class GUIInterface:
             width=30)
         activities_listbox.pack(expand=True, fill=X, side=LEFT)
 
-        # creates a scrollbar and attaches it to frame1a window
+        # creates a scrollbar and attaches it to frame1b window
         activities_scrollbar = tk.Scrollbar(frame1b)
         activities_scrollbar.pack(expand=True, fill=BOTH, side=LEFT)
         # Attaching Listbox to Scrollbar Since we need to have a vertical scroll we use yscrollcommand
@@ -190,6 +190,9 @@ class GUIInterface:
         # setting scrollbar command parameter to listbox.yview method its yview because we need to have a vertical view
         states_scrollbar.config(command=states_listbox.yview)
 
+        spacer = tk.Label(frame1d, bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
+        spacer.pack(expand=True, fill=BOTH, side=LEFT)
+
         parks_listbox = tk.Listbox(
             frame1d,
             listvariable=parks_var,
@@ -227,7 +230,7 @@ class GUIInterface:
         self.frame2.tkraise()
         # print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
-        #park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
+        # park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
         park_info_df, campground_results_df, parking_lot_results_df = self.data_handler.fetch_results(
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
@@ -287,13 +290,12 @@ class GUIInterface:
 
         # i = 1
         # for result in results_list:
-            # print('Name : {}, Information : {}'.format(park.park_name, park.park_information))
-            # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
-            # # parks_var = tk.StringVar(value=park.display_park())
+        # print('Name : {}, Information : {}'.format(park.park_name, park.park_information))
+        # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
+        # # parks_var = tk.StringVar(value=park.display_park())
         # print(results_list)
         resultsbox.insert(END, park_info_df)
         resultsbox.pack()
-
 
         # creates close and print button widgets
         save_results = tk.Button(
