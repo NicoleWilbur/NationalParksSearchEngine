@@ -8,34 +8,35 @@ class ParkResults:
 
     @classmethod
     def param_constructor(cls, park_info_df, campground_results_df, parking_lot_results_df):
-        activity_list = []
-        amenity_list = []
-        state_list = []
-       # joined = pd.merge(park_info_df, campground_results_df, left_on='park_code', right_on='park_code', how='left')
-        print("foo")
-        #print(joined.to_string())
-        for i in range(len(park_info_df['park_name'])):
-            for park in park_info_df['park_name'][i]:
-                print(park)
-                for state in park_info_df['park_states'][i]:
-                    state_list.append(state)
-                print("State(s): ")
-                print(*state_list, sep=", ")
-                for activity in park_info_df['activity_name'][i]:
-                    activity_list.append(activity)
-                print("Activities: ")
-                print(*activity_list, sep=", ")
-                for amenity in park_info_df['amenity_name'][i]:
-                    amenity_list.append(amenity)
-                print("Amenities: ")
-                print(*amenity_list, sep=", ")
-                # for campground in campground_results_df['park_code'].isin(park_info_df['park_code'][i]):
-                #     print(campground['campground_name'])
-
-        # print(park_info_df.to_string(max_rows=5))
-        # print(campground_results_df.to_string(max_rows=5))
-
-
+        for park_row in park_info_df.iterrows():
+            # i = park_row[0]
+            park = park_row[1]["park_name"]
+            print(list(park)[0])
+            print("  State(s): ", ", ".join(park_row[1]["park_states"]))
+            # print(", ".join(park_row[1]["park_states"]))
+            print("  Activities: ")
+            print(", ".join(park_row[1]["activity_name"]))
+            print("  Amenities: ")
+            print(", ".join(park_row[1]["amenity_name"]))
+            for park_code in park_row[1]["park_code"]:
+                park_code = park_code
+            for camp_row in campground_results_df[campground_results_df["park_code"] == park_code].iterrows():
+                print("  ", camp_row[1]["campground_name"])
+                print("    Roads: ", camp_row[1]["campground_road"])
+                print("    Type of Campground: ", camp_row[1]["campground_classification"])
+                print("    ADA Information: ", camp_row[1]["campground_general_ADA"])
+                print("    Wheelchair Access: ", camp_row[1]["campground_wheelchair_access"])
+                print("    RV Information: ", camp_row[1]["campground_rv_info"])
+                print("    Campground Description: ", camp_row[1]["campground_description"])
+                print("    Cell Reception: ", camp_row[1]["campground_cell_reception"])
+                print("    Camp Store: ", camp_row[1]["campground_camp_store"])
+                print("    Internet Availability: ", camp_row[1]["campground_internet"])
+                print("    Potable Water Availability: ", camp_row[1]["campground_potable_water"])
+                print("    Toilet Information: ", camp_row[1]["campground_toilets"])
+                print("    Number of Electric Sites: ", camp_row[1]["campground_campsites_electric"])
+                print("    Staff or Volunteer Present: ", camp_row[1]["campground_staff_volunteer"])
+            for lot_row in parking_lot_results_df[parking_lot_results_df["park_code"] == park_code].iterrows():
+                print("  ", lot_row[1]["campground_name"])
 
     #     for i in range(0, row_count):
     #         cls.campground_name = ', '.join(str(campground_info_df.loc[i, 'campground_name']))
