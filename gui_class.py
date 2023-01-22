@@ -4,7 +4,6 @@ from tkinter import LEFT, BOTH, RIGHT, END, X, TOP, messagebox
 from api_pandas import APIPandas
 from park_results import ParkResults
 
-
 class GUIInterface:
 
     def __init__(self, data_handler, distinct_activities, distinct_amenities, distinct_parks, distinct_states):
@@ -228,9 +227,7 @@ class GUIInterface:
     def load_frame2(self):
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
-        # print(self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
-        # park_info_dictionary, campground_info_dictionary, places_info_dictionary, parking_lot_info_dictionary = \
         park_info_df, campground_results_df, parking_lot_results_df = self.data_handler.fetch_results(
             self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
 
@@ -288,12 +285,6 @@ class GUIInterface:
         # setting scrollbar command parameter to listbox.yview method its yview because we need to have a vertical view
         scrollbar.config(command=resultsbox.yview)
 
-        # i = 1
-        # for result in results_list:
-        # print('Name : {}, Information : {}'.format(park.park_name, park.park_information))
-        # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
-        # # parks_var = tk.StringVar(value=park.display_park())
-        # print(results_list)
         resultsbox.insert(END, results_for_gui)
         resultsbox.pack()
 
@@ -305,7 +296,7 @@ class GUIInterface:
             fg='black',
             cursor='hand2',
             activeforeground=self.bg_color,
-            command=lambda: self.save_to_file(park_info_df)
+            command=lambda: self.save_to_file(results_for_gui)
         )
         save_results.pack(side=TOP, pady=10)
 

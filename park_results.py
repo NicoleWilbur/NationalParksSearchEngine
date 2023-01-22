@@ -13,15 +13,14 @@ class ParkResults:
                 string += tup[i]
             else:
                 string += 'No Data'
-
-        print(string)
         return string
 
     def __init__(self):
-        self.results_list = ''
+        pass
 
     @classmethod
     def param_constructor(cls, park_info_df, campground_results_df, parking_lot_results_df):
+        cls.results_list = []
         cls.park = ""
         cls.state = ""
         cls.amenities = ""
@@ -39,9 +38,16 @@ class ParkResults:
         cls.toilet = ''
         cls.electricity = ''
         cls.staffvolunteer = ''
+        cls.lotname = ''
+        cls.adainfo = ''
+        cls.adaaccess = ''
+        cls.oversizedspaces = ''
+        cls.adaspaces = ''
+        cls.stepfreespaces = ''
+        cls.vanspaces = ''
+        cls.lotdescription = ''
 
         for park_row in park_info_df.iterrows():
-            # i = park_row[0]
             park = park_row[1]["park_name"]
             cls.park = list(park)[0]
             state = "  State(s): ", ", ".join(park_row[1]["park_states"])
@@ -82,14 +88,25 @@ class ParkResults:
                 cls.electricity = cls.convert_tuple(electricity)
                 staffvolunteer = "    Staff or Volunteer Present: ", camp_row[1]["campground_staff_volunteer"]
                 cls.staffvolunteer = cls.convert_tuple(staffvolunteer)
-            # for lot_row in parking_lot_results_df[parking_lot_results_df["park_code"] == park_code].iterrows():
-            #     print("  Parking Lot: ", lot_row[1]["parking_lots_name"])
-            #     print("    ADA Information: ", lot_row[1]["parking_lots_ADA_facility_description"])
-            #     print("    ADA Accessible?: ", lot_row[1]["parking_lots_is_lot_accessible"])
-            #     print("    Number of Over-Sized Spaces:  ", lot_row[1]["parking_lots_number_oversized_spaces"])
-            #     print("    Number of ADA Spaces: ", lot_row[1]["parking_lots_number_ADA_spaces"])
-            #     print("    Number of ADA Step-Free Spaces: ", lot_row[1]["parking_lots_number_ADA_Step_Free_Spaces"])
-            #     print("    Number of ADA Van Spaces: ", lot_row[1]["parking_lots_number_ADA_van_spaces"])
-            #     print("    Parking Lot Description: ", lot_row[1]["parking_lots_description"])
+            for lot_row in parking_lot_results_df[parking_lot_results_df["park_code"] == park_code].iterrows():
+                lotname = "  Parking Lot: ", lot_row[1]["parking_lots_name"]
+                cls.lotname = cls.convert_tuple(lotname)
+                adainfo = "    ADA Information: ", lot_row[1]["parking_lots_ADA_facility_description"]
+                cls.adainfo = cls.convert_tuple(adainfo)
+                adaaccess = "    ADA Accessible?: ", lot_row[1]["parking_lots_is_lot_accessible"]
+                cls.adaaccess = cls. convert_tuple(adaaccess)
+                oversizedspaces = "    Number of Over-Sized Spaces:  ", lot_row[1]["parking_lots_number_oversized_spaces"]
+                cls.oversizedspaces = cls.convert_tuple(oversizedspaces)
+                adaspaces = "    Number of ADA Spaces: ", lot_row[1]["parking_lots_number_ADA_spaces"]
+                cls.adaaccess = cls.convert_tuple(adaspaces)
+                stepfreespaces = "    Number of ADA Step-Free Spaces: ", lot_row[1]["parking_lots_number_ADA_Step_Free_Spaces"]
+                cls.stepfreespaces = cls.convert_tuple(stepfreespaces)
+                vanspaces = "    Number of ADA Van Spaces: ", lot_row[1]["parking_lots_number_ADA_van_spaces"]
+                cls.vanspaces = cls.convert_tuple(vanspaces)
+                lotdescription = "    Parking Lot Description: ", lot_row[1]["parking_lots_description"]
+                cls.lotdescription = cls.convert_tuple(lotdescription)
 
-
+            cls.results_list += [cls.park, cls.state, cls.amenities, cls.campname, cls.roads, cls.camptype, cls.campADA,
+            cls.wheelchair, cls.rvinfo, cls.campdesc, cls.cellreception, cls.campstore, cls.internet, cls.water, cls.toilet,
+            cls.electricity, cls.staffvolunteer, cls.lotname, cls.adainfo, cls.adaaccess, cls.oversizedspaces, cls.adaspaces,
+            cls.stepfreespaces, cls.vanspaces, cls.lotdescription]

@@ -84,7 +84,7 @@ class APIPandas:
 
         response = requests.get(self.api_addresses[2] + self.api_key)
         results = response.json()['data']
-        # jprint(results)
+
 
         for item in results:
             lst = [item['parkCode'], self.dc(item['id']), self.dc(item['name']), self.dc(item['url'])]
@@ -107,9 +107,7 @@ class APIPandas:
 
             data.append(lst)
 
-        # print(data)
         self.campgrounds_df = pd.DataFrame(data=data, columns=cols)
-        # print(campgrounds_df.to_string())
 
         ##parking_lots
         cols = ['parking_lots_id', 'parking_lots_name', 'parking_lots_ADA_facility_description',
@@ -121,7 +119,6 @@ class APIPandas:
 
         response = requests.get(self.api_addresses[3] + self.api_key)
         results = response.json()['data']
-        # jprint(results)
 
         for item in results:
             lst = [self.dc(item['id']), self.dc(item['name']),
@@ -135,10 +132,8 @@ class APIPandas:
             for park in item['relatedParks']:
                 lst.append(self.dc(park['parkCode']))
                 data.append(lst)
-        # print(data)
+
         self.parking_lot_df = pd.DataFrame(data=data, columns=cols)
-        # self.parking_lot_df = self.parking_lot_df[-1:] + self.parking_lot_df[:-1]
-        # print(parking_lot_df.to_string())
 
         ##places
         cols = ['park_code', 'places_id', 'places_title', 'places_url']
@@ -146,7 +141,6 @@ class APIPandas:
 
         response = requests.get(self.api_addresses[4] + self.api_key)
         results = response.json()['data']
-        # jprint(results)
 
         for item in results:
             for park in item['relatedParks']:
@@ -159,9 +153,7 @@ class APIPandas:
 
             data.append(lst)
 
-        # print(data)
         self.places_df = pd.DataFrame(data=data, columns=cols)
-        # print(self.places_df.to_string())
 
     def fetch_dropdown_list_data(self):
         distinct_activities_parks = []
@@ -175,10 +167,6 @@ class APIPandas:
             distinct_parks = self.activities_df['park_name'].unique().tolist()
             distinct_states = self.activities_df.loc[
                 self.activities_df['park_states'].str.len() == length_to_find, 'park_states'].unique().tolist()
-            # states_list = self.activities_df['park_states'].unique()
-            # for state in states_list:
-            #     if len(state) == 2:
-            #         distinct_states.append(state)
 
         except ConnectionError:
             print('4: An error occurred; please try again.')
@@ -186,10 +174,6 @@ class APIPandas:
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
     def fetch_results(self, activities_selection = [], amenities_selection = [], parks_selection = [], states_selection = []):
-        # print(self.activities_df.to_string())
-        # print(activities_selection, amenities_selection, parks_selection, states_selection)
-        # print(type(activities_selection), type(amenities_selection), type(parks_selection), type(states_selection))
-        # print(self.activities_df.to_string(max_rows=2))
         try:
             if activities_selection:
                 activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
@@ -268,18 +252,15 @@ class APIPandas:
             else:
                 messagebox.showerror('Yikes! Something went wrong. Please try another selection.')
 
-            #print(pandas_select_df.to_string(max_rows=5))
             results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
-            #print(results_df.to_string(max_rows=5))
+
             park_results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']]
                                                                     , on='park_code', how='left')
             park_results_df.fillna("No Data", inplace=True)
-            print(park_results_df.to_csv("park_results.csv"))
 
             park_info_df = pd.DataFrame(
                 park_results_df.groupby('park_code').agg({'park_name': set, 'park_states': set, 'activity_name': set,
                                                           'amenity_name': set, 'amenity_url': set}))
-            print(park_info_df.to_csv("parkdf.csv"))
 
             campground_results_df = pd.merge(pandas_select_df, self.campgrounds_df[['park_code', 'campground_name',
                                                                     'campground_road', 'campground_classification',
@@ -292,7 +273,6 @@ class APIPandas:
                                                                    'campground_campsites_electric',
                                                                    'campground_staff_volunteer']], on='park_code',
                                                                     how='left').drop_duplicates()
-            print(campground_results_df.to_csv("campgroundsdf.csv",index=False))
             campground_info_df = pd.DataFrame(
                 campground_results_df.groupby('park_code').agg({'campground_name': set,
                                                                 'campground_road': set,
@@ -310,8 +290,6 @@ class APIPandas:
                                                                 'campground_staff_volunteer': set}))
             campground_info_df.index = range(len(campground_info_df))
 
-            # places_results_df = pd.merge(pandas_select_df, self.places_df[['park_code', 'places_title', 'places_url']],
-            #                                                         on='park_code', how='left').drop_duplicates()
             parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', 'parking_lots_name',
                                                                     'parking_lots_ADA_facility_description',
                                                                     'parking_lots_is_lot_accessible', 'parking_lots_number_oversized_spaces',
@@ -320,53 +298,16 @@ class APIPandas:
                                                                     'parking_lots_number_ADA_van_spaces',
                                                                     'parking_lots_description']], on='park_code',
                                                                     how='left').drop_duplicates()
-            print(parking_lots_results_df.to_csv("parkinglotdf.csv",index=False))
-            # print(places_results_df.to_string(max_rows=10))
-            # print(parking_lots_df.to_string(max_rows=10))
-            # print(park_results_df.to_string(max_rows=10))
+
             park_info_df = pd.DataFrame(park_results_df.groupby('park_code').agg({'park_code': set, 'park_name': set, 'park_states': set, 'activity_name': set,
                                         'amenity_name': set, 'amenity_url': set}))
             park_info_df.index = range(len(park_info_df))
-            # campground_info_df = pd.DataFrame(campground_results_df.groupby('park_code').agg({'campground_name': set,
-            #                             'campground_road': set, 'campground_classification': set,
-            #                             'campground_general_ADA': set, 'campground_wheelchair_access': set,
-            #                             'campground_rv_info': set, 'campground_description': set,
-            #                             'campground_cell_reception': set, 'campground_camp_store': set,
-            #                             'campground_internet': set, 'campground_potable_water': set,
-            #                             'campground_toilets': set, 'campground_campsites_electric': set,
-            #                             'campground_staff_volunteer': set}))
-            # campground_info_df.index = range(len(campground_info_df))
-
-            # places_info_df = pd.DataFrame(places_results_df.groupby('park_code').agg({'places_title': set, 'places_url': set}))
-            # places_info_df.index = range(len(places_info_df))
-
-            # parking_lot_info_df = pd.DataFrame(parking_lots_results_df.groupby('park_code').agg({'parking_lots_name': set, 'parking_lots_ADA_facility_description': set,
-            #                             'parking_lots_is_lot_accessible': set, 'parking_lots_number_oversized_spaces': set,
-            #                             'parking_lots_number_ADA_spaces': set, 'parking_lots_number_ADA_Step_Free_Spaces': set,
-            #                             'parking_lots_number_ADA_van_spaces': set, 'parking_lots_description': set}))
-            # parking_lot_info_df.index = range(len(parking_lot_info_df))
 
             return park_info_df, campground_results_df, parking_lots_results_df
-            # print(campground_info_df.to_string())
-            # print(parking_lot_info_df)
-            #ParkResults(park_info_df, campground_info_df, places_info_df, parking_lot_info_df)
 
-            #print(results)
-
-            #df.groupby('park_code').agg({'camp_ground': list, 'parking_lot': list}).to_dict(orient='index')
-
-            # for park_code in pandas_select_df.to_list():
-            #     park_list += park_name
-            #     park_state = 'foo'
-            #     park_information = 'boo'
-            #     park_list.append(ParkResults(park_name[0], park_state, park_information))
-            # print('A')
 
             # for park in park_list:
             #     print('Name: {},   State: {},   Information: {}'.format(park.park_name, park.park_state, park.park_information))
-
-            # ParkResults.display_park(park_list)
-            # ParkResults.save_to_file(park_list)
 
 
         except ConnectionError:
