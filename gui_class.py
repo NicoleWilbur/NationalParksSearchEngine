@@ -1,3 +1,5 @@
+import datetime
+import os
 import tkinter as tk
 from tkinter import LEFT, BOTH, RIGHT, END, X, TOP, messagebox
 
@@ -72,11 +74,19 @@ class GUIInterface:
         else:
             self.load_frame2()
 
-    def save_to_file(self, results_list):
-        with open('config.txt', 'a') as f:
-            for result in results_list:
-                f.write('Name : {} Information : {}'.format(result.park_name, result.park_information) + '\n\n')
-        f.close()
+    def save_to_file(self, results):
+        current_time = datetime.datetime.now()
+        try:
+            if os.path.exists('National Parks Search Results.txt'):
+                messagebox.showinfo(message='National Parks Search Results.txt Already Exists. Results will be saved to '
+                                            'end of that file unless file is deleted or contents erased.')
+            with open('National Parks Search Results.txt', 'a') as f:
+                print('foo')
+                f.write('Search Results as of: ' + str(current_time) + '\n\n' + results)
+            messagebox.showinfo(message='National Parks Search Results.txt Saved')
+            f.close()
+        except:
+            messagebox.showinfo(message='boo')
 
     def close_button(self, frame):
         close = tk.Button(
@@ -124,11 +134,11 @@ class GUIInterface:
         # search box labels
         activities_label = tk.Label(frame1a, text='Select activities:  ', font=('TkHeaderFont', 10),
                                     bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
-        activities_label.pack(expand=True, anchor="center", side=LEFT)
+        activities_label.pack(expand=True, anchor='center', side=LEFT)
 
         amenities_label = tk.Label(frame1a, text='Select amenities:  ', font=('TkHeaderFont', 10),
                                    bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
-        amenities_label.pack(expand=True, anchor="center", side=RIGHT)
+        amenities_label.pack(expand=True, anchor='center', side=RIGHT)
 
         states_label = tk.Label(frame1c, text='Select states/territories:  ', font=('TkHeaderFont', 10),
                                 bg=self.bg_color, fg=self.fg_color, padx=30, pady=10)
@@ -235,7 +245,6 @@ class GUIInterface:
             messagebox.showinfo(message='No results found. Try a different search.')
             self.load_frame1()
         else:
-            print("boo")
             results_for_gui = ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
 
         back = tk.Button(
@@ -260,8 +269,8 @@ class GUIInterface:
         ).pack(side=TOP, pady=10)
 
         tk.Label(self.frame2,
-                 text='Parks Meeting Your Search of:\n' + str(self.activities_selection) + '\n' + str(
-                     self.amenities_selection),
+                 text='Parks Meeting Your Search of:\n' + str(self.activities_selection) + '\n' + str(self.amenities_selection)
+                      + '\n' + str(self.states_selection) + '\n' + str(self.parks_selection),
                  bg=self.bg_color,
                  fg=self.fg_color,
                  font=('TkTextFont', 12)

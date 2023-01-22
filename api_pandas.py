@@ -13,17 +13,13 @@ class APIPandas:
         self.api_addresses = ['https://developer.nps.gov/api/v1/activities/parks?limit=99000',
                               'https://developer.nps.gov/api/v1/amenities/parksplaces?limit=99000',
                               'https://developer.nps.gov/api/v1/campgrounds?limit=99000?',
-                              'https://developer.nps.gov/api/v1/parkinglots?limit=99000',
-                              'https://developer.nps.gov/api/v1/places?limit=99000']
+                              'https://developer.nps.gov/api/v1/parkinglots?limit=99000']
         self.activities_df = []
         self.amenities_parks_df = []
         self.campgrounds_df = []
         self.parking_lot_df = []
-        self.places_df = []
         self.parks_df = []
         self.states_df = []
-
-        # results = response.json()['data']
 
     @staticmethod
     def dc(data):
@@ -135,180 +131,125 @@ class APIPandas:
 
         self.parking_lot_df = pd.DataFrame(data=data, columns=cols)
 
-        ##places
-        cols = ['park_code', 'places_id', 'places_title', 'places_url']
-        data = []
-
-        response = requests.get(self.api_addresses[4] + self.api_key)
-        results = response.json()['data']
-
-        for item in results:
-            for park in item['relatedParks']:
-                lst = []
-                multiple = []
-                for park in item['relatedParks']:
-                    multiple.append(park['parkCode'])
-                lst.append(self.dc(park['parkCode']))
-                lst += [self.dc(item['id']), self.dc(item['title']), self.dc(item['url'])]
-
-            data.append(lst)
-
-        self.places_df = pd.DataFrame(data=data, columns=cols)
-
     def fetch_dropdown_list_data(self):
-        distinct_activities_parks = []
-        distinct_amenities = []
-        distinct_parks = []
-        distinct_states = []
         length_to_find = 2
-        try:
-            distinct_activities_parks = self.activities_df['activity_name'].unique().tolist()
-            distinct_amenities = self.amenities_parks_df['amenity_name'].unique().tolist()
-            distinct_parks = self.activities_df['park_name'].unique().tolist()
-            distinct_states = self.activities_df.loc[
-                self.activities_df['park_states'].str.len() == length_to_find, 'park_states'].unique().tolist()
 
-        except ConnectionError:
-            print('4: An error occurred; please try again.')
+        distinct_activities_parks = self.activities_df['activity_name'].unique().tolist()
+        distinct_amenities = self.amenities_parks_df['amenity_name'].unique().tolist()
+        distinct_parks = self.activities_df['park_name'].unique().tolist()
+        distinct_states = self.activities_df.loc[
+            self.activities_df['park_states'].str.len() == length_to_find, 'park_states'].unique().tolist()
 
         return distinct_activities_parks, distinct_amenities, distinct_parks, distinct_states
 
     def fetch_results(self, activities_selection = [], amenities_selection = [], parks_selection = [], states_selection = []):
-        try:
-            if activities_selection:
-                activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
-                                            isin(activities_selection)].drop_duplicates()
-            else:
-                activities_selection_df = pd.DataFrame()
-            if amenities_selection:
-                amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].
-                                            isin(amenities_selection)].drop_duplicates()
-            else:
-                amenities_selection_df = pd.DataFrame()
-            if states_selection:
-                states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].
-                                            isin(states_selection)].drop_duplicates()
-            else:
-                states_selection_df = pd.DataFrame()
-            if parks_selection:
-                parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
-                                            isin(parks_selection)].drop_duplicates()
-            else:
-                parks_selection_df = pd.DataFrame()
+        if activities_selection:
+            activities_selection_df = self.activities_df['park_code'][self.activities_df['activity_name'].
+                                        isin(activities_selection)].drop_duplicates()
+        else:
+            activities_selection_df = pd.DataFrame()
+        if amenities_selection:
+            amenities_selection_df = self.amenities_parks_df['park_code'][self.amenities_parks_df['amenity_name'].
+                                        isin(amenities_selection)].drop_duplicates()
+        else:
+            amenities_selection_df = pd.DataFrame()
+        if states_selection:
+            states_selection_df = self.activities_df['park_code'][self.activities_df['park_states'].
+                                        isin(states_selection)].drop_duplicates()
+        else:
+            states_selection_df = pd.DataFrame()
+        if parks_selection:
+            parks_selection_df = self.activities_df['park_code'][self.activities_df['park_name'].
+                                        isin(parks_selection)].drop_duplicates()
+        else:
+            parks_selection_df = pd.DataFrame()
 
-            pandas_select_df = pd.DataFrame(columns=['Park Code'], index=range(1,))
+        pandas_select_df = pd.DataFrame(columns=['Park Code'], index=range(1,))
 
-            if not activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty \
-                    and not states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
-                                               activities_selection_df.isin(states_selection_df) & activities_selection_df.
-                                               isin(parks_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and not amenities_selection_df.empty and not states_selection_df.empty \
-                    and parks_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
-                                               activities_selection_df.isin(states_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty \
-                    and states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty\
-                    and not states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(states_selection_df) & activities_selection_df.
-                                               isin(parks_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
-                    states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(parks_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
-                    not states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(states_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty \
-                    and states_selection_df.empty:
-                pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) & activities_selection_df.
-                                               isin(parks_selection_df)].drop_duplicates()
-            elif not activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
-                    states_selection_df.empty:
-                pandas_select_df = activities_selection_df.drop_duplicates()
-            elif activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty\
-                    and not states_selection_df.empty:
-                pandas_select_df = amenities_selection_df[amenities_selection_df.isin(states_selection_df) & amenities_selection_df.
-                                               isin(parks_selection_df)].drop_duplicates()
-            elif activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty and \
-                    not states_selection_df.empty:
-                pandas_select_df = amenities_selection_df[amenities_selection_df.isin(states_selection_df)].drop_duplicates()
-            elif activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty\
-                    and states_selection_df.empty:
-                pandas_select_df = amenities_selection_df[amenities_selection_df.isin(parks_selection_df)].drop_duplicates()
-            elif activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty and \
-                    states_selection_df.empty:
-                pandas_select_df = amenities_selection_df.drop_duplicates()
-            elif activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
-                    not states_selection_df.empty:
-                pandas_select_df = parks_selection_df[parks_selection_df.isin(states_selection_df)].drop_duplicates()
-            elif activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
-                    states_selection_df.empty:
-                pandas_select_df = parks_selection_df.drop_duplicates()
-            elif activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
-                    not states_selection_df.empty:
-                pandas_select_df = states_selection_df.drop_duplicates()
-            else:
-                messagebox.showerror('Yikes! Something went wrong. Please try another selection.')
+        if not activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty \
+                and not states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
+                                           activities_selection_df.isin(states_selection_df) & activities_selection_df.
+                                           isin(parks_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and not amenities_selection_df.empty and not states_selection_df.empty \
+                and parks_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) &
+                                           activities_selection_df.isin(states_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty \
+                and states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty\
+                and not states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(states_selection_df) & activities_selection_df.
+                                           isin(parks_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
+                states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(parks_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
+                not states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(states_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty \
+                and states_selection_df.empty:
+            pandas_select_df = activities_selection_df[activities_selection_df.isin(amenities_selection_df) & activities_selection_df.
+                                           isin(parks_selection_df)].drop_duplicates()
+        elif not activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
+                states_selection_df.empty:
+            pandas_select_df = activities_selection_df.drop_duplicates()
+        elif activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty\
+                and not states_selection_df.empty:
+            pandas_select_df = amenities_selection_df[amenities_selection_df.isin(states_selection_df) & amenities_selection_df.
+                                           isin(parks_selection_df)].drop_duplicates()
+        elif activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty and \
+                not states_selection_df.empty:
+            pandas_select_df = amenities_selection_df[amenities_selection_df.isin(states_selection_df)].drop_duplicates()
+        elif activities_selection_df.empty and not amenities_selection_df.empty and not parks_selection_df.empty\
+                and states_selection_df.empty:
+            pandas_select_df = amenities_selection_df[amenities_selection_df.isin(parks_selection_df)].drop_duplicates()
+        elif activities_selection_df.empty and not amenities_selection_df.empty and parks_selection_df.empty and \
+                states_selection_df.empty:
+            pandas_select_df = amenities_selection_df.drop_duplicates()
+        elif activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
+                not states_selection_df.empty:
+            pandas_select_df = parks_selection_df[parks_selection_df.isin(states_selection_df)].drop_duplicates()
+        elif activities_selection_df.empty and amenities_selection_df.empty and not parks_selection_df.empty and \
+                states_selection_df.empty:
+            pandas_select_df = parks_selection_df.drop_duplicates()
+        elif activities_selection_df.empty and amenities_selection_df.empty and parks_selection_df.empty and \
+                not states_selection_df.empty:
+            pandas_select_df = states_selection_df.drop_duplicates()
+        else:
+            messagebox.showerror('Yikes! Something went wrong. Please try another selection.')
 
-            results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
+        results_df = pd.merge(pandas_select_df, self.activities_df, on='park_code', how='left')
 
-            park_results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']]
-                                                                    , on='park_code', how='left')
-            park_results_df.fillna("No Data", inplace=True)
+        park_results_df = pd.merge(results_df, self.amenities_parks_df[['park_code', 'amenity_name', 'amenity_url']]
+                                                                , on='park_code', how='left')
+        park_results_df.fillna("No Data", inplace=True)
 
-            park_info_df = pd.DataFrame(
-                park_results_df.groupby('park_code').agg({'park_name': set, 'park_states': set, 'activity_name': set,
-                                                          'amenity_name': set, 'amenity_url': set}))
+        park_info_df = pd.DataFrame(park_results_df.groupby('park_code').agg(
+            {'park_code': set, 'park_name': set, 'park_states': set, 'activity_name': set,
+             'amenity_name': set, 'amenity_url': set}))
+        park_info_df.index = range(len(park_info_df))
 
-            campground_results_df = pd.merge(pandas_select_df, self.campgrounds_df[['park_code', 'campground_name',
-                                                                    'campground_road', 'campground_classification',
-                                                                   'campground_general_ADA',
-                                                                   'campground_wheelchair_access',
-                                                                   'campground_rv_info', 'campground_description',
-                                                                   'campground_cell_reception', 'campground_camp_store',
-                                                                   'campground_internet', 'campground_potable_water',
-                                                                   'campground_toilets',
-                                                                   'campground_campsites_electric',
-                                                                   'campground_staff_volunteer']], on='park_code',
-                                                                    how='left').drop_duplicates()
-            campground_info_df = pd.DataFrame(
-                campground_results_df.groupby('park_code').agg({'campground_name': set,
-                                                                'campground_road': set,
-                                                                'campground_classification': set,
-                                                                'campground_general_ADA': set,
-                                                                'campground_wheelchair_access': set,
-                                                                'campground_rv_info': set,
-                                                                'campground_description': set,
-                                                                'campground_cell_reception': set,
-                                                                'campground_camp_store': set,
-                                                                'campground_internet': set,
-                                                                'campground_potable_water': set,
-                                                                'campground_toilets': set,
-                                                                'campground_campsites_electric': set,
-                                                                'campground_staff_volunteer': set}))
-            campground_info_df.index = range(len(campground_info_df))
+        campground_results_df = pd.merge(pandas_select_df, self.campgrounds_df[['park_code', 'campground_name',
+                                                                'campground_road', 'campground_classification',
+                                                               'campground_general_ADA',
+                                                               'campground_wheelchair_access',
+                                                               'campground_rv_info', 'campground_description',
+                                                               'campground_cell_reception', 'campground_camp_store',
+                                                               'campground_internet', 'campground_potable_water',
+                                                               'campground_toilets',
+                                                               'campground_campsites_electric',
+                                                               'campground_staff_volunteer']], on='park_code',
+                                                                how='left').drop_duplicates()
 
-            parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', 'parking_lots_name',
-                                                                    'parking_lots_ADA_facility_description',
-                                                                    'parking_lots_is_lot_accessible', 'parking_lots_number_oversized_spaces',
-                                                                    'parking_lots_number_ADA_spaces',
-                                                                    'parking_lots_number_ADA_Step_Free_Spaces',
-                                                                    'parking_lots_number_ADA_van_spaces',
-                                                                    'parking_lots_description']], on='park_code',
-                                                                    how='left').drop_duplicates()
+        parking_lots_results_df = pd.merge(pandas_select_df, self.parking_lot_df[['park_code', 'parking_lots_name',
+                                                                'parking_lots_ADA_facility_description',
+                                                                'parking_lots_is_lot_accessible', 'parking_lots_number_oversized_spaces',
+                                                                'parking_lots_number_ADA_spaces',
+                                                                'parking_lots_number_ADA_Step_Free_Spaces',
+                                                                'parking_lots_number_ADA_van_spaces',
+                                                                'parking_lots_description']], on='park_code',
+                                                                how='left').drop_duplicates()
 
-            park_info_df = pd.DataFrame(park_results_df.groupby('park_code').agg({'park_code': set, 'park_name': set, 'park_states': set, 'activity_name': set,
-                                        'amenity_name': set, 'amenity_url': set}))
-            park_info_df.index = range(len(park_info_df))
-
-            return park_info_df, campground_results_df, parking_lots_results_df
-
-
-            # for park in park_list:
-            #     print('Name: {},   State: {},   Information: {}'.format(park.park_name, park.park_state, park.park_information))
-
-
-        except ConnectionError:
-            print('4: Connection interrupted; please try again.')
+        return park_info_df, campground_results_df, parking_lots_results_df
