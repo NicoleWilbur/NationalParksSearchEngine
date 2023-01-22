@@ -239,7 +239,7 @@ class GUIInterface:
             self.load_frame1()
         else:
             print("boo")
-            ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
+            results_for_gui = ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
 
         back = tk.Button(
             self.frame2,
@@ -294,7 +294,7 @@ class GUIInterface:
         # parks_var = tk.StringVar(value='Name : {} Information : {}'.format(park.park_name, park.park_information))
         # # parks_var = tk.StringVar(value=park.display_park())
         # print(results_list)
-        resultsbox.insert(END, park_info_df)
+        resultsbox.insert(END, results_for_gui)
         resultsbox.pack()
 
         # creates close and print button widgets
