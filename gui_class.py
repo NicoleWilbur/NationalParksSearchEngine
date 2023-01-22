@@ -268,9 +268,14 @@ class GUIInterface:
             font=('TkHeadingFont', 20)
         ).pack(side=TOP, pady=10)
 
+        search_parameters = self.activities_selection + self.amenities_selection + self.states_selection + self.parks_selection
+        string_parameters = ''
+        for parameter in search_parameters:
+            string_parameters += parameter + ', '
+        string_parameters = string_parameters[:-2]
+
         tk.Label(self.frame2,
-                 text='Parks Meeting Your Search of:\n' + str(self.activities_selection) + '\n' + str(self.amenities_selection)
-                      + '\n' + str(self.states_selection) + '\n' + str(self.parks_selection),
+                 text='Parks Meeting Your Search of:\n' + string_parameters,
                  bg=self.bg_color,
                  fg=self.fg_color,
                  font=('TkTextFont', 12)
