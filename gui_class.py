@@ -19,6 +19,7 @@ class GUIInterface:
         self.parks_selection = []
         self.states_selection = []
         self.amenities_selection = []
+        self.results_for_gui = ''
 
         self.root = tk.Tk()
         self.root.title('National Parks Service Search Engine')
@@ -72,7 +73,24 @@ class GUIInterface:
         if not activities_selection and not amenities_selection and not states_selection and not parks_selection:
             messagebox.showinfo(message='Please choose at least one item.')
         else:
-            self.load_frame2()
+            results_check = self.get_results()
+            print(results_check)
+            if results_check:
+                self.load_frame2()
+    def get_results(self):
+
+        park_info_df, campground_results_df, parking_lot_results_df = self.data_handler.fetch_results(
+            self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
+
+        if park_info_df.empty and campground_results_df.empty and parking_lot_results_df.empty:
+            messagebox.showinfo(message='No results found. Try a different search.')
+            self.activities_selection.clear(), self.amenities_selection.clear(),
+            self.states_selection.clear(), self.parks_selection.clear()
+
+        else:
+            self.results_for_gui = ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
+
+        return self.results_for_gui
 
     def save_to_file(self, results):
         current_time = datetime.datetime.now()
@@ -238,15 +256,6 @@ class GUIInterface:
         self.clear_widgets(self.frame1)
         self.frame2.tkraise()
 
-        park_info_df, campground_results_df, parking_lot_results_df = self.data_handler.fetch_results(
-            self.activities_selection, self.amenities_selection, self.parks_selection, self.states_selection)
-
-        if park_info_df.empty and campground_results_df.empty and parking_lot_results_df.empty:
-            messagebox.showinfo(message='No results found. Try a different search.')
-            self.load_frame1()
-        else:
-            results_for_gui = ParkResults.param_constructor(park_info_df, campground_results_df, parking_lot_results_df)
-
         back = tk.Button(
             self.frame2,
             text='Back',
@@ -299,7 +308,7 @@ class GUIInterface:
         # setting scrollbar command parameter to listbox.yview method its yview because we need to have a vertical view
         scrollbar.config(command=resultsbox.yview)
 
-        resultsbox.insert(END, results_for_gui)
+        resultsbox.insert(END, self.results_for_gui)
         resultsbox.pack()
 
         # creates close and print button widgets
@@ -310,7 +319,7 @@ class GUIInterface:
             fg='black',
             cursor='hand2',
             activeforeground=self.bg_color,
-            command=lambda: self.save_to_file(results_for_gui)
+            command=lambda: self.save_to_file(self.results_for_gui)
         )
         save_results.pack(side=TOP, pady=10)
 
