@@ -1,9 +1,10 @@
-import math
-
-import pandas as pd
 
 
 class ParkResults:
+
+    def __init__(self):
+        pass
+
     @staticmethod
     def convert_tuple(tup):
         string = ''
@@ -14,9 +15,6 @@ class ParkResults:
             else:
                 string += 'No Data'
         return string
-
-    def __init__(self):
-        pass
 
     @classmethod
     def param_constructor(cls, park_info_df, campground_results_df, parking_lot_results_df):
